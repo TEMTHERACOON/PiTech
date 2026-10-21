@@ -10,6 +10,7 @@ finished picture.
 | Frame container | `ASSETS/frame.png` — the photo is rendered inside the frame's window |
 | Upload photo | Inserts (or replaces) the single photo held by the frame |
 | Download | Exports the frame + photo as a 1080 × 1080 PNG — nothing else is stamped onto the export, no logos or branding |
+| Hover / touch | The frame, both logos, the tagline and the buttons grow slightly on hover — or while pressed on touch devices |
 
 ## Getting started
 

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { composeFrame, downloadBlob } from "@/lib/compose-frame"
 
 const imageButtonClasses =
-  "h-auto w-full max-w-[240px] cursor-pointer rounded-2xl border-0 bg-transparent p-0 shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:bg-transparent active:translate-y-0 focus-visible:ring-ring/45 disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0"
+  "h-auto w-full max-w-[240px] cursor-pointer rounded-2xl border-0 bg-transparent p-0 shadow-none transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:scale-[1.04] hover:bg-transparent active:translate-y-0 active:scale-[1.04] focus-visible:ring-ring/45 disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100"
 
 type ActionButtonsProps = {
   photo: string | null
