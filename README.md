@@ -40,6 +40,9 @@ on a `<canvas>` at 1080 × 1080.
 The frame container is rounded in the UI only — the exported PNG keeps the artwork's
 original square corners.
 
+The container also carries a 6 px white outline with a `#A9B5DF` shadow cast outside
+that outline. Like the rounding, both are pure CSS and never reach the export.
+
 To regenerate the cut-out after replacing the frame artwork:
 
 ```powershell

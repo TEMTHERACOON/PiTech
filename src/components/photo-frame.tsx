@@ -8,7 +8,7 @@ type PhotoFrameProps = {
 export function PhotoFrame({ photo, className = "" }: PhotoFrameProps) {
   return (
     <div
-      className={`relative aspect-square w-full overflow-hidden rounded-3xl bg-white shadow-frame sm:rounded-4xl ${className}`}
+      className={`relative aspect-square w-full overflow-hidden rounded-3xl border-[6px] border-white bg-white shadow-frame sm:rounded-4xl ${className}`}
     >
       {photo ? (
         <img
