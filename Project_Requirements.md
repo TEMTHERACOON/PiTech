@@ -19,7 +19,8 @@ npx shadcn@latest init --preset b3L03wnt7w --template vite
 
 BG COLOR N DIV COLOR: #ffffff
 Font Color: #2d336b
-Shadow Color: A9B5DF
+Shadow Color: #A9B5DF
+
 
 Font: Noto Sans
 
