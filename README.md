@@ -48,16 +48,17 @@ pwsh -File scripts\generate-frame-cutout.ps1
 
 ```
 ┌──────────────────────────────┬───────────────────────────┐
-│                              │      PiTech logo          │
+│                              │        PiTech logo        │
 │                              │  "Memories Forever        │
 │      Frame + photo           │       Digitlized!"        │
 │      (frame-cutout.png       │      AllianCICS logo      │
 │       layered on top)        │                           │
-│                              │   [Download] [Upload]     │
+│                              │     [Download] [Upload]    │
 └──────────────────────────────┴───────────────────────────┘
 ```
 
-On narrow screens the two columns stack vertically.
+The right-hand column is centred: both logos, the tagline and the buttons share the
+same centre line. On narrow screens the two columns stack vertically.
 
 ## Theme
 

@@ -38,7 +38,7 @@ export function ActionButtons({
   }
 
   return (
-    <div className="flex w-full flex-col items-center gap-5 lg:items-end">
+    <div className="flex w-full flex-col items-center gap-5 text-center">
       <input
         ref={inputRef}
         type="file"

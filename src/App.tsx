@@ -25,8 +25,8 @@ function App() {
         <PhotoFrame photo={photo} className="max-w-[min(92vw,520px)]" />
 
         {/* Right — branding and actions */}
-        <section className="flex w-full max-w-md flex-col items-center gap-10 lg:items-end">
-          <BrandPanel className="lg:items-end" />
+        <section className="flex w-full max-w-md flex-col items-center gap-10 text-center">
+          <BrandPanel />
 
           <ActionButtons
             photo={photo}

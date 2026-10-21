@@ -3,7 +3,7 @@ import pitech from "@/assets/PiTech.png"
 
 export function BrandPanel({ className = "" }: { className?: string }) {
   return (
-    <div className={`flex flex-col items-center gap-6 ${className}`}>
+    <div className={`flex flex-col items-center gap-6 text-center ${className}`}>
       <img
         src={pitech}
         alt="PiTech"
