@@ -45,6 +45,7 @@
     --shadow-brand: 0 24px 48px -20px #a9b5df, 0 8px 20px -14px #a9b5df;
     --shadow-brand-sm: 0 12px 26px -12px #a9b5df;
     --shadow-brand-lg: 0 36px 70px -24px #a9b5df, 0 12px 28px -18px #a9b5df;
+    --shadow-frame: 0 28px 60px -20px #a9b5df, 0 12px 28px -12px #a9b5df;
 }
 
 /* Drop shadows that follow the silhouette of the button artwork. */

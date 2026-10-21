@@ -35,8 +35,10 @@ made transparent.
 
 At runtime the photo is rendered underneath that cut-out frame, so it shows through the
 window with a pixel-perfect edge. The download button repeats the exact same compositing
-on a `<canvas>` at 1080 × 1080, which means the downloaded PNG is pixel-identical to what
-is on screen.
+on a `<canvas>` at 1080 × 1080.
+
+The frame container is rounded in the UI only — the exported PNG keeps the artwork's
+original square corners.
 
 To regenerate the cut-out after replacing the frame artwork:
 
