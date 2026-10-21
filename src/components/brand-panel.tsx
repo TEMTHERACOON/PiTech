@@ -7,17 +7,17 @@ export function BrandPanel({ className = "" }: { className?: string }) {
       <img
         src={pitech}
         alt="PiTech"
-        className="h-14 w-auto select-none sm:h-16"
+        className="h-20 w-auto select-none sm:h-24"
       />
 
-      <p className="text-balance text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+      <p className="text-balance text-lg font-semibold tracking-tight text-foreground sm:text-xl">
         Memories Forever Digitlized!
       </p>
 
       <img
         src={allianCics}
         alt="AllianCICS"
-        className="h-20 w-auto select-none sm:h-24"
+        className="h-14 w-auto select-none sm:h-16"
       />
     </div>
   )
