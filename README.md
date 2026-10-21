@@ -9,7 +9,7 @@ finished picture.
 | --- | --- |
 | Frame container | `ASSETS/frame.png` — the photo is rendered inside the frame's window |
 | Upload photo | Inserts (or replaces) the single photo held by the frame |
-| Download | Exports the frame + photo as a 1080 × 1080 PNG |
+| Download | Exports the frame + photo as a 1080 × 1080 PNG — nothing else is stamped onto the export, no logos or branding |
 
 ## Getting started
 
