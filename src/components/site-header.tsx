@@ -30,7 +30,7 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
             <Camera3D size={26} />
           </span>
           <div className="flex flex-col text-left leading-tight">
-            <span className="bg-gradient-to-br from-[#22396f] to-[#010736] bg-clip-text text-xl font-bold tracking-tight text-transparent sm:text-2xl">
+            <span className="bg-gradient-to-br from-[#16794a] to-[#062b16] bg-clip-text text-xl font-bold tracking-tight text-transparent sm:text-2xl">
               PiTech
             </span>
             <span className="text-xs font-medium text-muted-foreground sm:text-sm">
@@ -54,7 +54,7 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
       <div className="flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between lg:justify-end">
         <nav
           aria-label="Sections"
-          className="flex rounded-2xl bg-[#eef1f9] p-1 shadow-[inset_2px_2px_6px_rgba(34,57,111,0.14),inset_-2px_-2px_6px_rgba(255,255,255,0.95)]"
+          className="flex rounded-2xl bg-[#eaf5ee] p-1 shadow-[inset_2px_2px_6px_rgba(20,102,58,0.14),inset_-2px_-2px_6px_rgba(255,255,255,0.95)]"
         >
           {TABS.map(({ id, label, Icon }) => {
             const isActive = activeTab === id
@@ -70,7 +70,7 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
                   <motion.span
                     layoutId="header-tab"
                     transition={{ type: "spring", stiffness: 320, damping: 28 }}
-                    className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#22396f] to-[#0d1c42] shadow-[2px_2px_8px_rgba(34,57,111,0.4),inset_0_1px_0_rgba(252,241,208,0.2)]"
+                    className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#16794a] to-[#0b3a20] shadow-[2px_2px_8px_rgba(20,102,58,0.4),inset_0_1px_0_rgba(252,241,208,0.2)]"
                   />
                 )}
                 <span

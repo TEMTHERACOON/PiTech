@@ -99,21 +99,22 @@ in the gallery header, an inline notice, and the footer.
 
 ## Theme
 
-Navy palette from
+Forest-green palette (derived from
 [Color Hunt · 0107360d1c4222396ffcf1d0](https://colorhunt.co/palette/0107360d1c4222396ffcf1d0),
-used as **navy accents on a white background**: the main app surface is white,
-while buttons, icons, and the auth screen carry the navy gradient.
+re-hued to green), used as **green accents on a white background**: the main app
+surface is white, while buttons, icons, and the auth screen carry the green
+gradient.
 
 | Token | Value | Use |
 | --- | --- | --- |
-| Ink | `#010736` | Headings, deepest navy |
-| Navy | `#0d1c42` | Button gradient base |
-| Indigo | `#22396f` | Button gradient top, accents |
-| Cream | `#fcf1d0` | Text/icon colour on navy |
+| Ink | `#062b16` | Headings, deepest green |
+| Green | `#0b3a20` | Button gradient base |
+| Emerald | `#16794a` | Button gradient top, accents |
+| Cream | `#fcf1d0` | Text/icon colour on green |
 | Background | `#ffffff` | Main app surface |
 
-Brand tokens live in `src/index.css` (`--brand-ink`, `--brand-navy`,
-`--brand-indigo`, `--brand-cream`).
+Brand tokens live in `src/index.css` (`--brand-ink`, `--brand-green`,
+`--brand-emerald`, `--brand-cream`).
 
 ### Gradients
 
@@ -121,13 +122,13 @@ Gradients are CSS custom properties in `src/index.css`:
 
 | Variable | Purpose |
 | --- | --- |
-| `--grad-navy` | Buttons and icon pods (`#22396f` → `#0b1738`) |
-| `--grad-navy-strong` | Stronger navy for emphasis |
+| `--grad-green` | Buttons and icon pods (`#16794a` → `#083a22`) |
+| `--grad-green-strong` | Stronger green for emphasis |
 | `--grad-page` | Auth-screen backdrop (`app-backdrop`) |
 
 Neomorphic surfaces (`neumorphic-card`, `neumorphic-frame`,
 `neumorphic-button`) use soft light shadows tuned for the white surface.
-`neumorphic-button` and the `icon-3d` pod paint the **navy gradient**.
+`neumorphic-button` and the `icon-3d` pod paint the **green gradient**.
 
 ### 3D icons
 
@@ -139,7 +140,7 @@ registered with Iconify at module load, so **nothing is fetched at runtime**.
 `src/components/icons-3d.tsx` wraps them behind stable semantic names
 (`Camera3D`, `Image3D`, `Wand3D`, `Download3D`, `ImagePlus3D`, `LogOut3D`,
 `Mail3D`, `Lock3D`, `Trash3D`, `ImageOff3D`, …). Each takes a `size` prop and
-sits on a navy gradient pod via the `icon-3d` utility.
+sits on a green gradient pod via the `icon-3d` utility.
 
 ## Chrome
 

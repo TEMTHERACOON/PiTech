@@ -120,7 +120,7 @@ export function ActionButtons({
               onClick={onClick}
               disabled={disabled}
             >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/95 shadow-[0_3px_8px_rgba(0,2,20,0.3)]">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/95 shadow-[0_3px_8px_rgba(4,32,18,0.3)]">
                 <Icon size={22} />
               </span>
               <span className="text-base font-medium">{label}</span>

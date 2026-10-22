@@ -6,58 +6,58 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-    /* Color Hunt #010736 / #0d1c42 / #22396f / #fcf1d0 — navy accents on white */
+    /* Green accents on white — forest / emerald ramp with cream */
     --background: #ffffff;
-    --foreground: #010736;
+    --foreground: #062b16;
     --card: #ffffff;
-    --card-foreground: #010736;
+    --card-foreground: #062b16;
     --popover: #ffffff;
-    --popover-foreground: #010736;
-    --primary: #0d1c42;
+    --popover-foreground: #062b16;
+    --primary: #0b3a20;
     --primary-foreground: #fcf1d0;
-    --secondary: #eef1f9;
-    --secondary-foreground: #0d1c42;
-    --muted: #eef1f9;
-    --muted-foreground: #5a6a9c;
-    --accent: #dbe3f5;
-    --accent-foreground: #0d1c42;
-    --destructive: #d1435b;
-    --border: #dbe3f5;
-    --input: #dbe3f5;
-    --ring: #22396f;
-    --chart-1: #22396f;
-    --chart-2: #0d1c42;
-    --chart-3: #010736;
-    --chart-4: #dbe3f5;
+    --secondary: #eaf5ee;
+    --secondary-foreground: #0b3a20;
+    --muted: #eaf5ee;
+    --muted-foreground: #4f7a5f;
+    --accent: #d3e8da;
+    --accent-foreground: #0b3a20;
+    --destructive: #c7495a;
+    --border: #d3e8da;
+    --input: #d3e8da;
+    --ring: #16794a;
+    --chart-1: #16794a;
+    --chart-2: #0b3a20;
+    --chart-3: #062b16;
+    --chart-4: #d3e8da;
     --chart-5: #fcf1d0;
     --radius: 0.875rem;
 
-    /* PiTech brand tokens — Color Hunt 0107360d1c4222396ffcf1d0 */
-    --brand-ink: #010736;
-    --brand-navy: #0d1c42;
-    --brand-indigo: #22396f;
+    /* PiTech brand tokens — forest green ramp */
+    --brand-ink: #062b16;
+    --brand-green: #0b3a20;
+    --brand-emerald: #16794a;
     --brand-cream: #fcf1d0;
 
     /* Gradient stops */
-    --grad-navy: linear-gradient(145deg, #22396f 0%, #16295a 55%, #0b1738 100%);
-    --grad-navy-strong: linear-gradient(145deg, #22396f 0%, #0d1c42 60%, #010736 100%);
-    --grad-page: linear-gradient(160deg, #010736 0%, #0a1840 45%, #14295d 100%);
+    --grad-green: linear-gradient(145deg, #16794a 0%, #0f5c37 55%, #083a22 100%);
+    --grad-green-strong: linear-gradient(145deg, #16794a 0%, #0b3a20 60%, #062b16 100%);
+    --grad-page: linear-gradient(160deg, #062b16 0%, #0b3a20 45%, #14663a 100%);
 
     /* Light neomorphic shadows on a white surface */
-    --shadow-dark: rgba(34, 57, 111, 0.22);
+    --shadow-dark: rgba(20, 102, 58, 0.22);
     --shadow-light: rgba(255, 255, 255, 0.95);
 }
 
 @theme {
     --font-sans: 'Noto Sans Variable', ui-sans-serif, system-ui, sans-serif;
-    --color-brand: #010736;
-    --color-brand-navy: #0d1c42;
-    --color-brand-indigo: #22396f;
+    --color-brand: #062b16;
+    --color-brand-green: #0b3a20;
+    --color-brand-emerald: #16794a;
     --color-brand-cream: #fcf1d0;
-    --shadow-brand: 0 18px 40px -20px rgba(34, 57, 111, 0.35);
-    --shadow-brand-sm: 0 10px 22px -14px rgba(34, 57, 111, 0.3);
-    --shadow-brand-lg: 0 30px 60px -26px rgba(34, 57, 111, 0.4);
-    --shadow-frame: 0 24px 52px -22px rgba(34, 57, 111, 0.32);
+    --shadow-brand: 0 18px 40px -20px rgba(20, 102, 58, 0.35);
+    --shadow-brand-sm: 0 10px 22px -14px rgba(20, 102, 58, 0.3);
+    --shadow-brand-lg: 0 30px 60px -26px rgba(20, 102, 58, 0.4);
+    --shadow-frame: 0 24px 52px -22px rgba(20, 102, 58, 0.32);
 }
 
 /* Neomorphic surfaces — soft light shadows on white. */
@@ -66,7 +66,7 @@
     box-shadow:
         10px 10px 24px var(--shadow-dark),
         -10px -10px 24px var(--shadow-light),
-        inset 0 0 0 1px rgba(34, 57, 111, 0.05);
+        inset 0 0 0 1px rgba(20, 102, 58, 0.05);
 }
 
 @utility neumorphic-frame {
@@ -74,63 +74,63 @@
     box-shadow:
         16px 16px 36px var(--shadow-dark),
         -16px -16px 34px var(--shadow-light),
-        inset 0 0 0 1px rgba(34, 57, 111, 0.05);
+        inset 0 0 0 1px rgba(20, 102, 58, 0.05);
 }
 
-/* Buttons carry the navy gradient. */
+/* Buttons carry the green gradient. */
 @utility neumorphic-button {
-    background: var(--grad-navy);
+    background: var(--grad-green);
     color: #fcf1d0;
     box-shadow:
-        9px 9px 20px rgba(34, 57, 111, 0.3),
+        9px 9px 20px rgba(20, 102, 58, 0.3),
         -6px -6px 16px rgba(255, 255, 255, 0.95),
         inset 0 1px 0 rgba(252, 241, 208, 0.22);
 }
 
-/* Icon pod — navy gradient tile for the 3D icons. */
+/* Icon pod — green gradient tile for the 3D icons. */
 @utility icon-3d {
-    background: var(--grad-navy);
+    background: var(--grad-green);
     box-shadow:
         inset 0 1px 0 rgba(252, 241, 208, 0.28),
-        inset 0 -2px 5px rgba(0, 2, 20, 0.45),
-        0 6px 14px rgba(34, 57, 111, 0.32);
+        inset 0 -2px 5px rgba(4, 32, 18, 0.45),
+        0 6px 14px rgba(20, 102, 58, 0.32);
 }
 
 @utility icon-3d-soft {
-    background: var(--grad-navy);
+    background: var(--grad-green);
     box-shadow:
         inset 0 1px 0 rgba(252, 241, 208, 0.22),
-        0 4px 10px rgba(34, 57, 111, 0.28);
+        0 4px 10px rgba(20, 102, 58, 0.28);
 }
 
 @layer utilities {
     .neumorphic-button:hover:not(:disabled) {
         box-shadow:
-            5px 5px 12px rgba(34, 57, 111, 0.28),
+            5px 5px 12px rgba(20, 102, 58, 0.28),
             -4px -4px 11px rgba(255, 255, 255, 0.95),
             inset 0 1px 0 rgba(252, 241, 208, 0.3);
     }
 
     .neumorphic-button:active:not(:disabled) {
         box-shadow:
-            inset 5px 5px 12px rgba(0, 2, 20, 0.5),
-            inset -4px -4px 11px rgba(64, 94, 170, 0.25);
+            inset 5px 5px 12px rgba(4, 32, 18, 0.5),
+            inset -4px -4px 11px rgba(46, 150, 102, 0.25);
     }
 
     .neumorphic-frame:hover {
         box-shadow:
-            20px 20px 44px rgba(34, 57, 111, 0.28),
+            20px 20px 44px rgba(20, 102, 58, 0.28),
             -20px -20px 42px rgba(255, 255, 255, 0.95),
-            inset 0 0 0 1px rgba(34, 57, 111, 0.05);
+            inset 0 0 0 1px rgba(20, 102, 58, 0.05);
     }
 
     .neumorphic-frame:active {
         box-shadow:
-            inset 12px 12px 26px rgba(34, 57, 111, 0.24),
+            inset 12px 12px 26px rgba(20, 102, 58, 0.24),
             inset -10px -10px 24px rgba(255, 255, 255, 0.9);
     }
 
-    /* Page backdrop — navy gradient (auth screen and chrome accents). */
+    /* Page backdrop — green gradient (auth screen and chrome accents). */
     .app-backdrop {
         background: var(--grad-page);
     }
