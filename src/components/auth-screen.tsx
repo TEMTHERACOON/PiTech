@@ -173,7 +173,7 @@ export function AuthScreen() {
           type="button"
           onClick={handleGoogle}
           disabled={isBusy}
-          className="neumorphic-button mt-6 h-12 w-full cursor-pointer rounded-2xl border-0 text-base font-semibold text-foreground transition-all hover:scale-[1.01] disabled:pointer-events-none disabled:opacity-60"
+          className="neumorphic-button mt-6 h-12 w-full cursor-pointer rounded-2xl border-0 text-base font-semibold text-white transition-all hover:scale-[1.01] disabled:pointer-events-none disabled:opacity-60"
         >
           <GoogleMark />
           Continue with Google

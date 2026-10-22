@@ -80,8 +80,15 @@ function Workspace() {
 
   if (isLoading) {
     return (
-      <main className="app-backdrop flex min-h-screen items-center justify-center text-foreground">
-        <Loader2 className="h-6 w-6 animate-spin text-[#fcf1d0]" />
+      <main className="app-backdrop relative flex min-h-screen items-center justify-center overflow-hidden text-foreground">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+        >
+          <div className="blob-a absolute -top-24 -left-24 h-[52vmin] w-[52vmin] rounded-full bg-[radial-gradient(circle_at_30%_30%,#16794a_0%,rgba(22,121,74,0.55)_45%,rgba(22,121,74,0)_72%)] opacity-60 blur-3xl" />
+          <div className="blob-b absolute -right-24 bottom-0 h-[60vmin] w-[60vmin] rounded-full bg-[radial-gradient(circle_at_70%_70%,#0b3a20_0%,rgba(11,58,32,0.5)_45%,rgba(11,58,32,0)_72%)] opacity-50 blur-3xl" />
+        </div>
+        <Loader2 className="relative h-6 w-6 animate-spin text-[#fcf1d0]" />
       </main>
     )
   }
@@ -89,7 +96,16 @@ function Workspace() {
   if (!user) return <AuthScreen />
 
   return (
-    <main className="flex min-h-screen w-full flex-col bg-white text-foreground">
+    <main className="relative flex min-h-screen w-full flex-col overflow-hidden bg-white text-foreground">
+      {/* Decorative gradient blobs — drift slowly behind the content */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+      >
+        <div className="blob-a absolute -top-24 -left-24 h-[52vmin] w-[52vmin] rounded-full bg-[radial-gradient(circle_at_30%_30%,#16794a_0%,rgba(22,121,74,0.55)_45%,rgba(22,121,74,0)_72%)] opacity-60 blur-3xl" />
+        <div className="blob-b absolute -right-24 bottom-0 h-[60vmin] w-[60vmin] rounded-full bg-[radial-gradient(circle_at_70%_70%,#0b3a20_0%,rgba(11,58,32,0.5)_45%,rgba(11,58,32,0)_72%)] opacity-50 blur-3xl" />
+      </div>
+
       {/* Header — fixed to the top of the viewport */}
       <header className="fixed inset-x-0 top-0 z-50 border-b border-[#d3e8da] bg-white/90 backdrop-blur-md">
         <div className="mx-auto w-full max-w-6xl px-4 py-3 sm:px-6 sm:py-4">
