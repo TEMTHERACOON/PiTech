@@ -109,7 +109,7 @@ export function GalleryPanel({
             Stored on this device only.
           </p>
         </div>
-        <p className="text-sm font-semibold text-[#a55704]">
+        <p className="text-sm font-semibold text-[#b07b45]">
           {photos.length} / {MAX_PHOTOS_PER_DEVICE} photos
         </p>
       </div>
@@ -126,7 +126,7 @@ export function GalleryPanel({
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             role="status"
-            className="text-sm font-semibold text-[#a55704]"
+            className="text-sm font-semibold text-[#b07b45]"
           >
             {notice}
           </motion.p>
@@ -140,8 +140,8 @@ export function GalleryPanel({
         </div>
       ) : photos.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#f8eadc] shadow-[inset_4px_4px_9px_#cbb08f,inset_-4px_-4px_9px_#fffdf9]">
-            <ImageOff className="h-7 w-7 text-[#a55704]" />
+          <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#fbf1e6] shadow-[inset_3px_3px_8px_rgba(163,130,96,0.14),inset_-3px_-3px_8px_rgba(255,253,249,0.9)]">
+            <ImageOff className="h-7 w-7 text-[#b07b45]" />
           </span>
           <p className="text-sm font-medium text-muted-foreground">
             No saved photos yet. Frame one and hit Download to keep it here.
@@ -158,7 +158,7 @@ export function GalleryPanel({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ type: "spring", stiffness: 260, damping: 24 }}
-                className="neumorphic-frame group relative overflow-hidden rounded-3xl bg-[#f3d2af] p-2"
+                className="neumorphic-frame group relative overflow-hidden rounded-3xl bg-[#f6ddc1] p-2"
               >
                 <img
                   src={photo.url}
@@ -179,7 +179,7 @@ export function GalleryPanel({
                     type="button"
                     onClick={() => handleDelete(photo.id)}
                     aria-label={`Delete ${photo.name}`}
-                    className="neumorphic-button flex h-9 flex-1 cursor-pointer items-center justify-center rounded-xl text-[#a55704]"
+                    className="neumorphic-button flex h-9 flex-1 cursor-pointer items-center justify-center rounded-xl text-[#b07b45]"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

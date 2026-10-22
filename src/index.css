@@ -6,98 +6,105 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-    --background: #f8eadc;
-    --foreground: #09251c;
-    --card: #f8eadc;
-    --card-foreground: #09251c;
-    --popover: #f8eadc;
-    --popover-foreground: #09251c;
-    --primary: #09251c;
-    --primary-foreground: #f8eadc;
-    --secondary: #f3d2af;
-    --secondary-foreground: #09251c;
-    --muted: #f3d2af;
-    --muted-foreground: #a55704;
-    --accent: #f3d2af;
-    --accent-foreground: #09251c;
-    --destructive: #a55704;
-    --border: #f3d2af;
-    --input: #f3d2af;
-    --ring: #a55704;
-    --chart-1: #a55704;
-    --chart-2: #f3d2af;
-    --chart-3: #09251c;
-    --chart-4: #f8eadc;
-    --chart-5: #09251c;
+    --background: #fbf1e6;
+    --foreground: #21332c;
+    --card: #fbf1e6;
+    --card-foreground: #21332c;
+    --popover: #fbf1e6;
+    --popover-foreground: #21332c;
+    --primary: #2b443a;
+    --primary-foreground: #fbf1e6;
+    --secondary: #f6ddc1;
+    --secondary-foreground: #2b443a;
+    --muted: #f6ddc1;
+    --muted-foreground: #9a6636;
+    --accent: #f6ddc1;
+    --accent-foreground: #2b443a;
+    --destructive: #b9724a;
+    --border: #f0dcbf;
+    --input: #f0dcbf;
+    --ring: #d0a577;
+    --chart-1: #c98f52;
+    --chart-2: #f6ddc1;
+    --chart-3: #2b443a;
+    --chart-4: #fbf1e6;
+    --chart-5: #2b443a;
     --radius: 0.875rem;
 
-    /* PiTech brand tokens — Color Hunt #09251c / #a55704 / #f3d2af / #f8eadc */
-    --brand-ink: #09251c;
-    --brand-amber: #a55704;
-    --brand-tan: #f3d2af;
-    --brand-cream: #f8eadc;
-    --brand-shadow: #a55704;
-    --brand-shadow-soft: #f3d2af;
-    --brand-highlight: #f8eadc;
+    /* PiTech brand tokens — softened Color Hunt #09251c / #a55704 / #f3d2af / #f8eadc */
+    --brand-ink: #21332c;
+    --brand-amber: #b07b45;
+    --brand-tan: #f6ddc1;
+    --brand-cream: #fbf1e6;
+    --brand-shadow: #d8c3a8;
+    --brand-shadow-soft: #f6ddc1;
+    --brand-highlight: #fffaf4;
 }
 
 @theme {
     --font-sans: 'Noto Sans Variable', ui-sans-serif, system-ui, sans-serif;
-    --color-brand: #09251c;
-    --color-brand-amber: #a55704;
-    --color-brand-tan: #f3d2af;
-    --color-brand-cream: #f8eadc;
-    --shadow-brand: 0 24px 48px -20px #a55704, 0 8px 20px -14px #f3d2af;
-    --shadow-brand-sm: 0 12px 26px -12px #a55704;
-    --shadow-brand-lg: 0 36px 70px -24px #a55704, 0 12px 28px -18px #f3d2af;
-    --shadow-frame: 0 28px 60px -20px #a55704, 0 12px 28px -12px #f3d2af;
+    --color-brand: #21332c;
+    --color-brand-amber: #b07b45;
+    --color-brand-tan: #f6ddc1;
+    --color-brand-cream: #fbf1e6;
+    --shadow-brand: 0 20px 40px -22px rgba(150, 118, 84, 0.35), 0 8px 18px -14px rgba(214, 186, 150, 0.4);
+    --shadow-brand-sm: 0 10px 22px -14px rgba(150, 118, 84, 0.3);
+    --shadow-brand-lg: 0 30px 60px -26px rgba(150, 118, 84, 0.35), 0 12px 26px -18px rgba(214, 186, 150, 0.4);
+    --shadow-frame: 0 24px 52px -22px rgba(150, 118, 84, 0.32), 0 10px 24px -14px rgba(214, 186, 150, 0.36);
 }
 
-/* Neomorphic surfaces built on the Color Hunt palette. */
+/* Neomorphic surfaces — softened with translucent shadows instead of hard hex. */
 @utility neumorphic-card {
-    background: #f8eadc;
+    background: #fbf1e6;
     box-shadow:
-        10px 10px 22px #cbb08f,
-        -10px -10px 22px #fffdf9;
+        9px 9px 20px rgba(163, 130, 96, 0.18),
+        -9px -9px 20px rgba(255, 253, 249, 0.9);
 }
 
 @utility neumorphic-frame {
     box-shadow:
-        16px 16px 32px #cbb08f,
-        -16px -16px 32px #fffdf9,
-        inset 0 0 0 1px rgba(9, 37, 28, 0.04);
+        14px 14px 30px rgba(163, 130, 96, 0.18),
+        -14px -14px 30px rgba(255, 253, 249, 0.9),
+        inset 0 0 0 1px rgba(33, 51, 44, 0.03);
 }
 
 @utility neumorphic-button {
-    background: #f8eadc;
+    background: #fbf1e6;
     box-shadow:
-        8px 8px 16px #cbb08f,
-        -8px -8px 16px #fffdf9;
+        7px 7px 15px rgba(163, 130, 96, 0.18),
+        -7px -7px 15px rgba(255, 253, 249, 0.9);
 }
 
 @layer utilities {
     .neumorphic-button:hover:not(:disabled) {
         box-shadow:
-            4px 4px 9px #cbb08f,
-            -4px -4px 9px #fffdf9;
+            3px 3px 8px rgba(163, 130, 96, 0.16),
+            -3px -3px 8px rgba(255, 253, 249, 0.85);
     }
 
     .neumorphic-button:active:not(:disabled) {
         box-shadow:
-            inset 5px 5px 10px #cbb08f,
-            inset -5px -5px 10px #fffdf9;
+            inset 4px 4px 9px rgba(163, 130, 96, 0.2),
+            inset -4px -4px 9px rgba(255, 253, 249, 0.85);
     }
 
     .neumorphic-frame:hover {
         box-shadow:
-            20px 20px 40px #cbb08f,
-            -20px -20px 40px #fffdf9;
+            18px 18px 38px rgba(163, 130, 96, 0.2),
+            -18px -18px 38px rgba(255, 253, 249, 0.9);
     }
 
     .neumorphic-frame:active {
         box-shadow:
-            inset 12px 12px 24px #cbb08f,
-            inset -12px -12px 24px #fffdf9;
+            inset 10px 10px 22px rgba(163, 130, 96, 0.2),
+            inset -10px -10px 22px rgba(255, 253, 249, 0.85);
+    }
+
+    /* Sticky chrome — header pinned to top, footer pinned to bottom. */
+    .sticky-chrome {
+        background: color-mix(in srgb, var(--background) 82%, transparent);
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
     }
 }
 

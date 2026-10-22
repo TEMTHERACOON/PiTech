@@ -7,7 +7,7 @@ import { useAuth } from "@/components/auth-provider"
 type Mode = "signin" | "signup"
 
 const fieldClasses =
-  "h-12 w-full rounded-2xl border-0 bg-[#f8eadc] pl-11 pr-11 text-foreground shadow-[inset_4px_4px_8px_#cbb08f,inset_-4px_-4px_8px_#fffdf9] outline-none transition-shadow placeholder:text-muted-foreground/70 focus-visible:shadow-[inset_2px_2px_5px_#cbb08f,inset_-2px_-2px_5px_#fffdf9,0_0_0_2px_#a55704]"
+  "h-12 w-full rounded-2xl border-0 bg-[#fbf1e6] pl-11 pr-11 text-foreground shadow-[inset_3px_3px_7px_rgba(163,130,96,0.14),inset_-3px_-3px_7px_rgba(255,253,249,0.9)] outline-none transition-shadow placeholder:text-muted-foreground/60 focus-visible:shadow-[inset_2px_2px_5px_rgba(163,130,96,0.12),inset_-2px_-2px_5px_rgba(255,253,249,0.9),0_0_0_2px_rgba(208,165,119,0.5)]"
 
 export function AuthScreen() {
   const { signIn, signUp, signInWithGoogle } = useAuth()
@@ -47,14 +47,14 @@ export function AuthScreen() {
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="w-full max-w-md rounded-[2rem] bg-background p-7 shadow-[18px_18px_36px_#cbb08f,-18px_-18px_36px_#fffdf9] sm:p-9"
+        className="neumorphic-card w-full max-w-md rounded-[2rem] p-7 sm:p-9"
       >
         <div className="flex flex-col items-center gap-3 text-center">
           <motion.span
             initial={{ scale: 0.6, rotate: -12 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 14 }}
-            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#09251c] text-[#f8eadc] shadow-[inset_2px_2px_5px_rgba(0,0,0,0.35)]"
+            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2b443a] text-[#fbf1e6] shadow-[inset_1px_1px_4px_rgba(0,0,0,0.2)]"
           >
             <Camera className="h-7 w-7" />
           </motion.span>
@@ -66,7 +66,7 @@ export function AuthScreen() {
           </p>
         </div>
 
-        <div className="mt-7 flex rounded-2xl bg-[#f8eadc] p-1 shadow-[inset_3px_3px_7px_#cbb08f,inset_-3px_-3px_7px_#fffdf9]">
+        <div className="mt-7 flex rounded-2xl bg-[#fbf1e6] p-1 shadow-[inset_2px_2px_6px_rgba(163,130,96,0.14),inset_-2px_-2px_6px_rgba(255,253,249,0.9)]">
           {(["signin", "signup"] as const).map((value) => (
             <button
               key={value}
@@ -78,12 +78,12 @@ export function AuthScreen() {
                 <motion.span
                   layoutId="auth-tab"
                   transition={{ type: "spring", stiffness: 320, damping: 28 }}
-                  className="absolute inset-0 rounded-xl bg-[#09251c] shadow-[3px_3px_7px_#cbb08f]"
+                  className="absolute inset-0 rounded-xl bg-[#2b443a] shadow-[2px_2px_6px_rgba(163,130,96,0.25)]"
                 />
               )}
               <span
                 className={`relative ${
-                  mode === value ? "text-[#f8eadc]" : "text-muted-foreground"
+                  mode === value ? "text-[#fbf1e6]" : "text-muted-foreground"
                 }`}
               >
                 {value === "signin" ? "Log in" : "Register"}
@@ -98,7 +98,7 @@ export function AuthScreen() {
               Email
             </span>
             <span className="relative">
-              <Mail className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-[#a55704]" />
+              <Mail className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-[#b07b45]" />
               <input
                 type="email"
                 required
@@ -116,7 +116,7 @@ export function AuthScreen() {
               Password
             </span>
             <span className="relative">
-              <Lock className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-[#a55704]" />
+              <Lock className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-[#b07b45]" />
               <input
                 type={showPassword ? "text" : "password"}
                 required
@@ -145,7 +145,7 @@ export function AuthScreen() {
           <Button
             type="submit"
             disabled={isBusy}
-            className="mt-1 h-12 w-full cursor-pointer rounded-2xl border-0 bg-[#a55704] text-base font-semibold text-[#f8eadc] shadow-[8px_8px_16px_#cbb08f,-8px_-8px_16px_#fffdf9] transition-all hover:bg-[#a55704]/90 hover:shadow-[4px_4px_9px_#cbb08f,-4px_-4px_9px_#fffdf9] active:shadow-[inset_5px_5px_10px_rgba(0,0,0,0.28)] disabled:pointer-events-none disabled:opacity-60"
+            className="mt-1 h-12 w-full cursor-pointer rounded-2xl border-0 bg-[#b07b45] text-base font-semibold text-[#fbf1e6] shadow-[6px_6px_14px_rgba(163,130,96,0.22),-6px_-6px_14px_rgba(255,253,249,0.9)] transition-all hover:bg-[#b07b45]/92 hover:shadow-[3px_3px_8px_rgba(163,130,96,0.2),-3px_-3px_8px_rgba(255,253,249,0.85)] active:shadow-[inset_4px_4px_9px_rgba(0,0,0,0.2)] disabled:pointer-events-none disabled:opacity-60"
           >
             {isBusy ? (
               <>
@@ -159,16 +159,16 @@ export function AuthScreen() {
         </form>
 
         <div className="mt-6 flex items-center gap-3">
-          <span className="h-px flex-1 bg-[#f3d2af]" />
+          <span className="h-px flex-1 bg-[#f0dcbf]" />
           <span className="text-xs font-medium text-muted-foreground">or</span>
-          <span className="h-px flex-1 bg-[#f3d2af]" />
+          <span className="h-px flex-1 bg-[#f0dcbf]" />
         </div>
 
         <Button
           type="button"
           onClick={handleGoogle}
           disabled={isBusy}
-          className="mt-6 h-12 w-full cursor-pointer rounded-2xl border-0 bg-background text-base font-semibold text-foreground shadow-[8px_8px_16px_#cbb08f,-8px_-8px_16px_#fffdf9] transition-all hover:shadow-[4px_4px_9px_#cbb08f,-4px_-4px_9px_#fffdf9] hover:scale-[1.01] active:shadow-[inset_5px_5px_10px_#cbb08f,inset_-5px_-5px_10px_#fffdf9] disabled:pointer-events-none disabled:opacity-60"
+          className="mt-6 h-12 w-full cursor-pointer rounded-2xl border-0 bg-background text-base font-semibold text-foreground shadow-[6px_6px_14px_rgba(163,130,96,0.18),-6px_-6px_14px_rgba(255,253,249,0.9)] transition-all hover:shadow-[3px_3px_8px_rgba(163,130,96,0.16),-3px_-3px_8px_rgba(255,253,249,0.85)] hover:scale-[1.01] active:shadow-[inset_4px_4px_9px_rgba(163,130,96,0.2),inset_-4px_-4px_9px_rgba(255,253,249,0.85)] disabled:pointer-events-none disabled:opacity-60"
         >
           <GoogleMark />
           Continue with Google

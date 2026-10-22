@@ -81,7 +81,7 @@ function Workspace() {
   if (isLoading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-background text-foreground">
-        <Loader2 className="h-6 w-6 animate-spin text-[#a55704]" />
+        <Loader2 className="h-6 w-6 animate-spin text-[#b07b45]" />
       </main>
     )
   }
@@ -90,9 +90,15 @@ function Workspace() {
 
   return (
     <main className="flex min-h-screen w-full flex-col bg-background text-foreground">
-      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 pt-8 sm:px-6 sm:pt-12">
-        <SiteHeader activeTab={tab} onTabChange={setTab} />
+      {/* Header — pinned to the top of the viewport */}
+      <div className="sticky-chrome sticky top-0 z-50 border-b border-[#f0dcbf]/70 px-4 pt-4 pb-4 sm:px-6">
+        <div className="mx-auto w-full max-w-6xl">
+          <SiteHeader activeTab={tab} onTabChange={setTab} />
+        </div>
+      </div>
 
+      {/* Scrolling content */}
+      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-8 pb-12 sm:px-6 sm:py-10 sm:pb-14">
         <AnimatePresence mode="wait">
           <motion.div
             key={tab}
@@ -120,7 +126,10 @@ function Workspace() {
         </AnimatePresence>
       </div>
 
-      <SiteFooter />
+      {/* Footer — pinned to the bottom of the viewport */}
+      <div className="sticky-chrome sticky bottom-0 z-40 border-t border-[#f0dcbf]/70">
+        <SiteFooter />
+      </div>
     </main>
   )
 }

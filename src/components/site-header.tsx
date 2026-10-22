@@ -26,7 +26,7 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#09251c] text-[#f8eadc] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3)] sm:h-12 sm:w-12">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#2b443a] text-[#fbf1e6] shadow-[inset_1px_1px_3px_rgba(0,0,0,0.2)] sm:h-12 sm:w-12">
             <Camera className="h-5 w-5 sm:h-6 sm:w-6" />
           </span>
           <div className="flex flex-col text-left leading-tight">
@@ -54,7 +54,7 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
       <div className="flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between lg:justify-end">
         <nav
           aria-label="Sections"
-          className="flex rounded-2xl bg-[#f8eadc] p-1 shadow-[inset_3px_3px_7px_#cbb08f,inset_-3px_-3px_7px_#fffdf9]"
+          className="flex rounded-2xl bg-[#fbf1e6] p-1 shadow-[inset_2px_2px_6px_rgba(163,130,96,0.16),inset_-2px_-2px_6px_rgba(255,253,249,0.9)]"
         >
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
@@ -68,12 +68,12 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
                 <motion.span
                   layoutId="header-tab"
                   transition={{ type: "spring", stiffness: 320, damping: 28 }}
-                  className="absolute inset-0 rounded-xl bg-[#09251c] shadow-[3px_3px_7px_#cbb08f]"
+                  className="absolute inset-0 rounded-xl bg-[#2b443a] shadow-[2px_2px_6px_rgba(163,130,96,0.25)]"
                 />
               )}
               <span
                 className={`relative flex items-center gap-2 ${
-                  activeTab === id ? "text-[#f8eadc]" : "text-muted-foreground"
+                  activeTab === id ? "text-[#fbf1e6]" : "text-muted-foreground"
                 }`}
               >
                 <Icon className="h-4 w-4" />

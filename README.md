@@ -101,22 +101,29 @@ in the gallery header, an inline notice, and the footer.
 
 | Token | Value |
 | --- | --- |
-| Ink / primary | `#09251c` |
-| Accent | `#a55704` |
-| Surface / tan | `#f3d2af` |
-| Background / cream | `#f8eadc` |
-| Shadow (dark side) | `#cbb08f` |
-| Shadow (light side) | `#fffdf9` |
+| Ink / primary | `#21332c` (softened from `#09251c`) |
+| Accent | `#b07b45` (softened from `#a55704`) |
+| Surface / tan | `#f6ddc1` (softened from `#f3d2af`) |
+| Background / cream | `#fbf1e6` (softened from `#f8eadc`) |
+| Shadow | `rgba(163, 130, 96, 0.18)` dark side / `rgba(255, 253, 249, 0.9)` light side |
 | Font | Noto Sans |
 
-Palette from [Color Hunt · 09251ca55704f3d2aff8eadc](https://colorhunt.co/palette/09251ca55704f3d2aff8eadc).
+Based on [Color Hunt · 09251ca55704f3d2aff8eadc](https://colorhunt.co/palette/09251ca55704f3d2aff8eadc),
+blended toward the warm cream so the UI reads softer: lower-contrast text, warm
+muted greys, and translucent neomorphic shadows instead of hard hex stops.
 Brand tokens live in `src/index.css` (`--brand-ink`, `--brand-amber`,
-`--brand-tan`, `--brand-cream`) and are exposed to Tailwind as `text-brand`,
-`text-brand-amber`, `shadow-brand`.
+`--brand-tan`, `--brand-cream`).
 
-Neomorphic surfaces are provided as utilities in `src/index.css`:
-`neumorphic-card`, `neumorphic-frame`, and `neumorphic-button` (each with
-hover/pressed inset states).
+Neomorphic surfaces are utilities in `src/index.css`: `neumorphic-card`,
+`neumorphic-frame`, and `neumorphic-button` (each with hover/pressed inset
+states). `sticky-chrome` gives the header/footer a translucent, blurred
+background.
+
+## Chrome
+
+The **header** is pinned to the top and the **footer** to the bottom of the
+viewport via `position: sticky`, so both stay visible while the content scrolls.
+Both use the translucent `sticky-chrome` backdrop.
 
 ## Stack
 
