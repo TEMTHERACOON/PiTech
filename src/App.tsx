@@ -7,6 +7,10 @@ import { GalleryPanel } from "@/components/gallery-panel"
 import { PhotoFrame } from "@/components/photo-frame"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader, type Tab } from "@/components/site-header"
+import {
+  IDENTITY_TRANSFORM,
+  type PhotoTransform,
+} from "@/lib/photo-transform"
 import { Loader2 } from "lucide-react"
 
 type PendingExport = { blob: Blob; name: string }
@@ -14,12 +18,16 @@ type PendingExport = { blob: Blob; name: string }
 function CreatePanel({
   photo,
   fileName,
+  transform,
   onSelectPhoto,
+  onTransformChange,
   onExported,
 }: {
   photo: string | null
   fileName: string | null
+  transform: PhotoTransform
   onSelectPhoto: (file: File) => void
+  onTransformChange: (transform: PhotoTransform) => void
   onExported: (blob: Blob, name: string) => void
 }) {
   return (
@@ -32,6 +40,8 @@ function CreatePanel({
       >
         <PhotoFrame
           photo={photo}
+          transform={transform}
+          onTransformChange={onTransformChange}
           className="w-full max-w-[min(90vw,480px)] sm:max-w-[min(85vw,520px)]"
         />
       </motion.div>
@@ -45,6 +55,7 @@ function CreatePanel({
         <ActionButtons
           photo={photo}
           fileName={fileName}
+          transform={transform}
           onSelectPhoto={onSelectPhoto}
           onExported={onExported}
         />
@@ -58,6 +69,7 @@ function Workspace() {
   const [tab, setTab] = useState<Tab>("create")
   const [photo, setPhoto] = useState<string | null>(null)
   const [fileName, setFileName] = useState<string | null>(null)
+  const [transform, setTransform] = useState<PhotoTransform>(IDENTITY_TRANSFORM)
   const [pending, setPending] = useState<PendingExport | null>(null)
   const headerRef = useRef<HTMLElement>(null)
   const footerRef = useRef<HTMLElement>(null)
@@ -93,6 +105,8 @@ function Workspace() {
   const handleSelectPhoto = (file: File) => {
     setPhoto(URL.createObjectURL(file))
     setFileName(file.name)
+    // A new photo starts at the default fit.
+    setTransform(IDENTITY_TRANSFORM)
   }
 
   const handleExported = useCallback((blob: Blob, name: string) => {
@@ -158,7 +172,9 @@ function Workspace() {
               <CreatePanel
                 photo={photo}
                 fileName={fileName}
+                transform={transform}
                 onSelectPhoto={handleSelectPhoto}
+                onTransformChange={setTransform}
                 onExported={handleExported}
               />
             ) : (

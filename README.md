@@ -11,12 +11,13 @@ personal gallery, and download the finished picture.
 | Frame container | `ASSETS/frame.png` — the photo is rendered inside the frame's window |
 | Take Photo | Opens the device camera on mobile (`capture="environment"`) |
 | Upload photo | Picks an image from the gallery to insert into the frame |
+| Zoom & pan | The photo inside the frame can be moved and zoomed — drag to reposition, scroll or pinch to zoom, double-click / double-tap to toggle 2×, plus zoom-out / zoom-in / reset buttons and keyboard control |
 | Download | Exports the frame + photo as a 1080 × 1080 PNG — nothing else is stamped onto the export, no logos or branding |
 | My Images | Saved framed photos — in Supabase Storage when configured, otherwise locally in IndexedDB |
 | Storage limit | **Up to 5 photos per device.** Enforced in the database and mirrored in the client; shown in the app and the gallery counter. |
 | Header / footer | Neomorphic site header (brand, tabs, account) and footer |
 | Animations | Framer Motion — entrance, tab transitions, layout, and list animations |
-| Hover / touch | Surfaces and buttons grow slightly on hover — or while pressed on touch devices |
+| Hover / touch | Buttons grow slightly on hover — or while pressed on touch devices |
 
 > **Limit:** each device keeps **5 photos**. With Supabase this is enforced by a
 > database trigger on `photo_slots`, so the client cannot bypass it. Offline it
@@ -53,6 +54,41 @@ At runtime the photo is rendered underneath that cut-out frame, so it shows thro
 window with a pixel-perfect edge. The download button repeats the exact same compositing
 on a `<canvas>` at 1080 × 1080.
 
+### Zooming and moving the photo
+
+`src/lib/photo-transform.ts` holds the geometry shared by the preview and the
+export. Everything is measured in *frame units* — one unit is one side of the
+frame square — so the same numbers describe the on-screen photo and the 1080 px
+canvas:
+
+| Piece | Meaning |
+| --- | --- |
+| `coverFit(w, h)` | The "cover" fit: the smallest size at which the photo still covers the frame square (the old `object-fit: cover`) |
+| `photoRect(transform, fit)` | Where the photo is drawn — left, top, width, height in frame units |
+| `clampTransform(...)` | Keeps the photo covering the whole window, so it can never be dragged off the frame or zoomed out past the fit |
+| `zoomTo(...)` / `panBy(...)` | Zoom around an anchor point and move the photo, both clamped |
+
+The window itself was measured from the artwork's alpha channel: the
+transparent opening spans x 60…1019 and y 342…1019 of the 1080 px square.
+
+Because the preview and `composeFrame()` share these functions, the downloaded
+PNG is the framed photo exactly as it appears on screen — zoom and pan
+included. The transform lives in `App.tsx` and resets whenever a new photo is
+picked.
+
+| Input | Result |
+| --- | --- |
+| Drag (mouse or one finger) | Moves the photo inside the frame |
+| Scroll wheel / trackpad pinch | Zooms around the pointer |
+| Two-finger pinch | Zooms around the fingers and follows them |
+| Double click / double tap | Toggles between the default fit and 2× |
+| Zoom buttons | 1.4× steps, with a live percentage |
+| Reset button | Back to the default fit |
+| Arrow keys, `+` / `-`, `0` | Move, zoom and reset when the frame has focus |
+
+The frame no longer grows on hover — a CSS scale on the frame would fight with
+dragging — but the neomorphic shadow still reacts to hover.
+
 The frame container is rounded in the UI only — the exported PNG keeps the artwork's
 original square corners.
 
@@ -76,7 +112,7 @@ pwsh -File scripts\generate-frame-cutout.ps1
 │      Frame + photo           │                            │
 │      (frame-cutout.png       │                            │
 │       layered on top)        │                            │
-│                              │                            │
+│      [− 100% + ⟳]            │                            │
 │                              │  [Take] [Upload] [Download] │
 ├──────────────────────────────┴────────────────────────────┤
 │  [◉] PiTech · © 2026                  Made with ♥          │  ← footer

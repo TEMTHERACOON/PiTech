@@ -26,7 +26,7 @@ export function GalleryPanel({
   const [photos, setPhotos] = useState<SavedPhoto[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [notice, setNotice] = useState<string | null>(null)
-  const savedRef = useRef<Blob | null>(null)
+  const saveRef = useRef<{ blob: Blob; promise: Promise<SavedPhoto> } | null>(null)
 
   const refresh = useCallback(async () => {
     const next = await listPhotos()
@@ -53,17 +53,28 @@ export function GalleryPanel({
   }, [refresh])
 
   useEffect(() => {
-    if (!pendingBlob || savedRef.current === pendingBlob) return
-    savedRef.current = pendingBlob
+    if (!pendingBlob) return
+
+    // The save is kept in a ref so a remount (React StrictMode runs effects
+    // twice in development) reuses the same write instead of storing the
+    // photo twice — and so the notice and the refreshed list still run.
+    if (!saveRef.current || saveRef.current.blob !== pendingBlob) {
+      saveRef.current = {
+        blob: pendingBlob,
+        promise: addPhoto(pendingBlob, pendingName ?? "framed-photo.png"),
+      }
+    }
+
     let cancelled = false
 
-    addPhoto(pendingBlob, pendingName ?? "framed-photo.png")
+    saveRef.current.promise
       .then(() => {
         if (cancelled) return
         setNotice("Saved to your gallery.")
         return refresh()
       })
       .catch((error: unknown) => {
+        saveRef.current = null
         if (cancelled) return
         setNotice(
           error instanceof Error

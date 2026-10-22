@@ -3,6 +3,7 @@ import { motion } from "motion/react"
 import { Download3D, Camera3D, ImagePlus3D } from "@/components/icons-3d"
 import { Button } from "@/components/ui/button"
 import { composeFrame, downloadBlob } from "@/lib/compose-frame"
+import type { PhotoTransform } from "@/lib/photo-transform"
 
 const neumorphicButtonClasses =
   "neumorphic-button group relative flex h-14 w-full max-w-[280px] cursor-pointer items-center justify-center gap-3 rounded-2xl border-0 px-6 text-[#fcf1d0] transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 disabled:hover:scale-100"
@@ -10,6 +11,8 @@ const neumorphicButtonClasses =
 type ActionButtonsProps = {
   photo: string | null
   fileName: string | null
+  /** Zoom and pan applied to the photo inside the frame. */
+  transform: PhotoTransform
   onSelectPhoto: (file: File) => void
   /** Reports the framed export so the caller can offer saving it to the gallery. */
   onExported?: (blob: Blob, name: string) => void
@@ -18,6 +21,7 @@ type ActionButtonsProps = {
 export function ActionButtons({
   photo,
   fileName,
+  transform,
   onSelectPhoto,
   onExported,
 }: ActionButtonsProps) {
@@ -31,7 +35,7 @@ export function ActionButtons({
     setError(null)
     setIsExporting(true)
     try {
-      const blob = await composeFrame(photo)
+      const blob = await composeFrame(photo, transform)
       const base = (fileName ?? "photo").replace(/\.[^.]+$/, "")
       const exportName = `pitech-${base}-framed.png`
       downloadBlob(blob, exportName)

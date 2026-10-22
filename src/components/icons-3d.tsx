@@ -20,8 +20,11 @@ import {
   Lock,
   LogOut,
   Mail,
+  RotateCcw,
   Trash2,
   Wand2,
+  ZoomIn,
+  ZoomOut,
 } from "lucide-react"
 
 type LucideIcon = typeof Camera
@@ -55,3 +58,6 @@ export const LogOut3D = makeIcon(LogOut)
 export const Mail3D = makeIcon(Mail)
 export const Lock3D = makeIcon(Lock)
 export const Trash3D = makeIcon(Trash2)
+export const ZoomIn3D = makeIcon(ZoomIn)
+export const ZoomOut3D = makeIcon(ZoomOut)
+export const Reset3D = makeIcon(RotateCcw)
