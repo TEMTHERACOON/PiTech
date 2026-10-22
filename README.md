@@ -123,22 +123,47 @@ local development.
 
 ### 3. Cloud project
 
-Create the hosted project and push the schema:
+The hosted project is created, linked, and migrated. Reference details:
+
+| Setting | Value |
+| --- | --- |
+| Project | **AsperTheGhost** |
+| Ref | `gjotiqtvajdjprvozjgq` |
+| Region | `ap-southeast-1` |
+| URL | `https://gjotiqtvajdjprvozjgq.supabase.co` |
+
+To recreate this from scratch:
 
 ```bash
-supabase login                # opens a browser to authenticate
-supabase projects create pitech --region <region> --org-id <org-id>
-supabase link --project-ref <project-ref>
-npm run db:push               # apply migrations to the linked project
-supabase storage create photos   # create the bucket (or use the dashboard)
+supabase login                # authenticate
+supabase projects create AsperTheGhost --org-id <org-id> --region ap-southeast-1
+supabase link --project-ref gjotiqtvajdjprvozjgq
+npm run db:push               # apply migrations (table, trigger, policies, bucket)
 ```
 
-The `photos` bucket is private. Its policies (in the migration) scope every
-object to a folder named after the user's id.
+The `photos` bucket is created by the second migration, so no manual dashboard
+step is needed.
 
-### 4. Schema
+### 4. Auth settings (dashboard)
 
-`supabase/migrations/20261022022313_init_photos.sql` defines:
+Two project settings are **not exposed by the CLI or Management API** and must be
+set in the dashboard once:
+
+- **Confirm email** → *off*
+  (<https://supabase.com/dashboard/project/gjotiqtvajdjprvozjgq/auth/providers> → Email).
+  Required for auto-approved sign-up. While it is on, `signUp()` returns a user
+  but no session, and the app shows *"Check your inbox…"* instead of entering the
+  workspace. The code already handles both states, so nothing breaks either way.
+- **Google provider** → *enable*, and add `http://localhost:5173` (plus your
+  deployed origin) to the redirect allow-list
+  (<https://supabase.com/dashboard/project/gjotiqtvajdjprvozjgq/auth/url-configuration>).
+  Required for "Continue with Google".
+
+Both settings are read from `/auth/v1/settings`; the app adapts at runtime.
+
+### 5. Schema
+
+`supabase/migrations/` defines:
 
 | Object | Purpose |
 | --- | --- |
@@ -146,6 +171,11 @@ object to a folder named after the user's id.
 | `enforce_photo_limit()` + trigger | Rejects the 6th insert for an owner — the 5-photo cap |
 | RLS policies | Owners can only read/write their own rows |
 | Storage policies | Owners can only touch objects under their own folder |
+| `photos` bucket | Private, 10 MiB, PNG/JPEG/WebP only |
+
+The limit is enforced in the database, so the client cannot bypass it. Verified
+against the hosted project: the 6th insert fails with SQLSTATE `23514` and the
+message *"You can save up to 5 photos on this device."*
 
 ## Auth
 
@@ -160,7 +190,13 @@ object to a folder named after the user's id.
   auto-approved so the demo never blocks.
 
 `src/components/auth-screen.tsx` and `src/components/auth-provider.tsx` are
-backend-agnostic and need no changes.
+backend-agnostic and need no changes. Failures are surfaced inline (wrong
+password, unconfirmed address), and a sign-up that needs confirmation shows a
+status message instead of entering the workspace.
+
+Verified against the hosted project: password sign-in returns a session, uploads
+are owner-scoped by RLS, the private bucket serves the owner and rejects others,
+and the 6th photo is refused by the database.
 
 ## Gallery storage
 

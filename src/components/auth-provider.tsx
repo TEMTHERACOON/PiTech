@@ -15,7 +15,8 @@ type AuthContextValue = {
   /** True until the stored session has been read on first mount. */
   isLoading: boolean
   signIn: (email: string, password: string) => Promise<void>
-  signUp: (email: string, password: string) => Promise<void>
+  /** Resolves with the outcome so the UI can report a pending confirmation. */
+  signUp: (email: string, password: string) => Promise<auth.SignUpResult>
   signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
 }
@@ -55,7 +56,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signUp = useCallback(async (email: string, password: string) => {
-    setUser(await auth.signUpWithPassword(email, password))
+    const result = await auth.signUpWithPassword(email, password)
+    if (result.user) setUser(result.user)
+    return result
   }, [])
 
   const signInWithGoogle = useCallback(async () => {

@@ -1,9 +1,10 @@
 import { useState } from "react"
-import { motion } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/components/auth-provider"
 import { Camera3D, Lock3D, Mail3D } from "@/components/icons-3d"
+import { isSupabaseConfigured } from "@/lib/supabase"
 
 type Mode = "signin" | "signup"
 
@@ -17,6 +18,8 @@ export function AuthScreen() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [isBusy, setIsBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [status, setStatus] = useState<string | null>(null)
 
   const isSignup = mode === "signup"
 
@@ -24,9 +27,21 @@ export function AuthScreen() {
     event.preventDefault()
     if (!email || !password || isBusy) return
     setIsBusy(true)
+    setError(null)
+    setStatus(null)
     try {
-      if (isSignup) await signUp(email, password)
-      else await signIn(email, password)
+      if (isSignup) {
+        const result = await signUp(email, password)
+        if (result.needsEmailConfirmation) {
+          setStatus(
+            "Check your inbox — we sent a confirmation link to finish creating your account.",
+          )
+        }
+      } else {
+        await signIn(email, password)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Try again.")
     } finally {
       setIsBusy(false)
     }
@@ -35,8 +50,12 @@ export function AuthScreen() {
   const handleGoogle = async () => {
     if (isBusy) return
     setIsBusy(true)
+    setError(null)
+    setStatus(null)
     try {
       await signInWithGoogle()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Google sign-in failed.")
     } finally {
       setIsBusy(false)
     }
@@ -72,7 +91,11 @@ export function AuthScreen() {
             <button
               key={value}
               type="button"
-              onClick={() => setMode(value)}
+              onClick={() => {
+                setMode(value)
+                setError(null)
+                setStatus(null)
+              }}
               className="relative flex-1 cursor-pointer rounded-xl px-4 py-2 text-sm font-semibold transition-colors"
             >
               {mode === value && (
@@ -161,6 +184,33 @@ export function AuthScreen() {
               <>{isSignup ? "Create account" : "Log in"}</>
             )}
           </Button>
+
+          <AnimatePresence mode="wait">
+            {error && (
+              <motion.p
+                key="error"
+                role="alert"
+                initial={{ opacity: 0, y: -6, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: "auto" }}
+                exit={{ opacity: 0, y: -6, height: 0 }}
+                className="rounded-2xl bg-[#fdeced] px-4 py-3 text-sm font-medium text-[#a3313f]"
+              >
+                {error}
+              </motion.p>
+            )}
+            {!error && status && (
+              <motion.p
+                key="status"
+                role="status"
+                initial={{ opacity: 0, y: -6, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: "auto" }}
+                exit={{ opacity: 0, y: -6, height: 0 }}
+                className="rounded-2xl bg-[#eaf5ee] px-4 py-3 text-sm font-medium text-[#0b3a20]"
+              >
+                {status}
+              </motion.p>
+            )}
+          </AnimatePresence>
         </form>
 
         <div className="mt-6 flex items-center gap-3">
@@ -180,8 +230,9 @@ export function AuthScreen() {
         </Button>
 
         <p className="mt-6 text-center text-xs leading-relaxed text-muted-foreground">
-          Demo mode — every sign-up and sign-in is auto-approved. Supabase auth
-          is coming soon.
+          {isSupabaseConfigured
+            ? "Your photos are private to your account and stored securely."
+            : "Demo mode — every sign-up and sign-in is auto-approved, and photos stay on this device."}
         </p>
       </motion.div>
     </main>

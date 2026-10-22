@@ -19,6 +19,13 @@ export type User = {
   createdAt: string
 }
 
+/** Outcome of a sign-up: either a live session, or a pending confirmation. */
+export type SignUpResult = {
+  user: User | null
+  /** True when Supabase sent a confirmation email and no session exists yet. */
+  needsEmailConfirmation?: boolean
+}
+
 // ---------------------------------------------------------------------------
 // Supabase-backed implementation
 // ---------------------------------------------------------------------------
@@ -97,8 +104,8 @@ export function onAuthStateChange(callback: (user: User | null) => void) {
 export async function signUpWithPassword(
   email: string,
   password: string,
-): Promise<User> {
-  if (!isSupabaseConfigured || !supabase) return mockSignUp(email, password)
+): Promise<SignUpResult> {
+  if (!isSupabaseConfigured || !supabase) return { user: await mockSignUp(email, password) }
 
   const { data, error } = await supabase.auth.signUp({
     email: email.trim().toLowerCase(),
@@ -107,13 +114,20 @@ export async function signUpWithPassword(
   if (error) throw new Error(error.message)
   if (!data.user) throw new Error("Sign-up did not return a user.")
 
-  return toUser({
-    id: data.user.id,
-    email: data.user.email,
-    createdAt: data.user.created_at,
-    appMetadata: data.user.app_metadata,
-    userMetadata: data.user.user_metadata,
-  })
+  // With "Confirm email" enabled Supabase returns a user but no session — the
+  // account is not usable until the emailed link is clicked. Report that state
+  // instead of handing back a user the app cannot use.
+  if (!data.session) return { user: null, needsEmailConfirmation: true }
+
+  return {
+    user: toUser({
+      id: data.user.id,
+      email: data.user.email,
+      createdAt: data.user.created_at,
+      appMetadata: data.user.app_metadata,
+      userMetadata: data.user.user_metadata,
+    }),
+  }
 }
 
 /** Signs in with email and password. */
