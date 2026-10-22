@@ -1,11 +1,10 @@
 import { useRef, useState } from "react"
-import downloadIcon from "@/assets/download.png"
-import uploadIcon from "@/assets/uploud.png"
+import { Camera, Download, ImagePlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { composeFrame, downloadBlob } from "@/lib/compose-frame"
 
-const imageButtonClasses =
-  "h-auto w-full max-w-[240px] cursor-pointer rounded-2xl border-0 bg-transparent p-0 shadow-none transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:scale-[1.04] hover:bg-transparent active:translate-y-0 active:scale-[1.04] focus-visible:ring-ring/45 disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:scale-100"
+const neumorphicButtonClasses =
+  "group relative flex h-14 w-full max-w-[280px] items-center justify-center gap-3 rounded-2xl border-0 bg-background px-6 text-foreground shadow-[8px_8px_16px_#a9b5df,_-8px_-8px_16px_#ffffff] transition-all duration-200 ease-out hover:shadow-[4px_4px_8px_#a9b5df,_-4px_-4px_8px_#ffffff] hover:scale-[1.02] active:shadow-[inset_4px_4px_8px_#a9b5df,inset_-4px_-4px_8px_#ffffff] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-[8px_8px_16px_#a9b5df,_-8px_-8px_16px_#ffffff] disabled:hover:scale-100"
 
 type ActionButtonsProps = {
   photo: string | null
@@ -18,7 +17,8 @@ export function ActionButtons({
   fileName,
   onSelectPhoto,
 }: ActionButtonsProps) {
-  const inputRef = useRef<HTMLInputElement>(null)
+  const galleryInputRef = useRef<HTMLInputElement>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
   const [isExporting, setIsExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -37,45 +37,61 @@ export function ActionButtons({
     }
   }
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) onSelectPhoto(file)
+    event.target.value = ""
+  }
+
   return (
-    <div className="flex w-full flex-col items-center gap-5 text-center">
+    <div className="flex w-full flex-col items-center gap-4 text-center sm:gap-5">
       <input
-        ref={inputRef}
+        ref={galleryInputRef}
         type="file"
         accept="image/*"
         className="sr-only"
-        onChange={(event) => {
-          const file = event.target.files?.[0]
-          if (file) onSelectPhoto(file)
-          event.target.value = ""
-        }}
+        onChange={handleFileChange}
+      />
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="sr-only"
+        onChange={handleFileChange}
       />
 
       <Button
         type="button"
         variant="ghost"
-        className={imageButtonClasses}
-        onClick={handleDownload}
-        disabled={!photo || isExporting}
+        className={neumorphicButtonClasses}
+        onClick={() => cameraInputRef.current?.click()}
       >
-        <img
-          src={downloadIcon}
-          alt={isExporting ? "Preparing download" : "Download framed photo"}
-          className="drop-shadow-brand w-full select-none"
-        />
+        <Camera className="h-5 w-5" />
+        <span className="text-base font-medium">Take Photo</span>
       </Button>
 
       <Button
         type="button"
         variant="ghost"
-        className={imageButtonClasses}
-        onClick={() => inputRef.current?.click()}
+        className={neumorphicButtonClasses}
+        onClick={() => galleryInputRef.current?.click()}
       >
-        <img
-          src={uploadIcon}
-          alt="Upload photo"
-          className="drop-shadow-brand w-full select-none"
-        />
+        <ImagePlus className="h-5 w-5" />
+        <span className="text-base font-medium">Upload from Gallery</span>
+      </Button>
+
+      <Button
+        type="button"
+        variant="ghost"
+        className={neumorphicButtonClasses}
+        onClick={handleDownload}
+        disabled={!photo || isExporting}
+      >
+        <Download className="h-5 w-5" />
+        <span className="text-base font-medium">
+          {isExporting ? "Preparing..." : "Download"}
+        </span>
       </Button>
 
       <p
@@ -87,7 +103,7 @@ export function ActionButtons({
             ? "Preparing your framed photo…"
             : photo
               ? "Ready to download"
-              : "Upload a photo to get started")}
+              : "Take a photo or upload to get started")}
       </p>
     </div>
   )

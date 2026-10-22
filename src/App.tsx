@@ -20,12 +20,12 @@ function App() {
 
   return (
     <main className="min-h-screen w-full bg-background text-foreground">
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-12 px-5 py-12 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:gap-16 lg:py-20">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 py-8 sm:gap-10 sm:px-6 sm:py-12 md:gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16 lg:py-20">
         {/* Left — frame container with the photo inside */}
-        <PhotoFrame photo={photo} className="max-w-[min(92vw,520px)]" />
+        <PhotoFrame photo={photo} className="w-full max-w-[min(90vw,480px)] sm:max-w-[min(85vw,520px)]" />
 
         {/* Right — branding and actions */}
-        <section className="flex w-full max-w-md flex-col items-center gap-10 text-center">
+        <section className="flex w-full max-w-md flex-col items-center gap-8 text-center sm:gap-10">
           <BrandPanel />
 
           <ActionButtons
