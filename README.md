@@ -130,17 +130,19 @@ Neomorphic surfaces (`neumorphic-card`, `neumorphic-frame`,
 `neumorphic-button`) use soft light shadows tuned for the white surface.
 `neumorphic-button` and the `icon-3d` pod paint the **green gradient**.
 
-### 3D icons
+### Icons
 
-Icons come from [Iconify](https://iconify.design) using the **Fluent Emoji** set
-(Microsoft Fluent design) — colorful, dimensional artwork. Only the icons the app
-uses are bundled, as a curated subset in `src/lib/fluent-emoji-subset.json`,
-registered with Iconify at module load, so **nothing is fetched at runtime**.
+Icons are flat, single-stroke line icons from [Lucide](https://lucide.dev),
+rendered white. The dimensional "3D" look comes from the gradient pod
+(`icon-3d` utility) they sit on — a green gradient tile with a top highlight,
+an inset bottom shadow, and a cast shadow, so the whole element reads as a
+raised, physical button.
 
-`src/components/icons-3d.tsx` wraps them behind stable semantic names
-(`Camera3D`, `Image3D`, `Wand3D`, `Download3D`, `ImagePlus3D`, `LogOut3D`,
-`Mail3D`, `Lock3D`, `Trash3D`, `ImageOff3D`, …). Each takes a `size` prop and
-sits on a green gradient pod via the `icon-3d` utility.
+`src/components/icons-3d.tsx` wraps the Lucide glyphs behind stable semantic
+names (`Camera3D`, `Image3D`, `Wand3D`, `Download3D`, `ImagePlus3D`, `LogOut3D`,
+`Mail3D`, `Lock3D`, `Trash3D`, `ImageOff3D`, …). Icons use `currentColor`, so
+they take the colour of their container: **white** on the green gradient
+buttons, and dark green where they sit on a light surface.
 
 ## Chrome
 
@@ -156,5 +158,4 @@ screens) so it clears the bars and is never hidden behind them.
 - Tailwind CSS v4
 - shadcn/ui (`base-nova` preset, base colour `mist`)
 - [Motion](https://motion.dev) (Framer Motion) for animations
-- [Lucide](https://lucide.dev) icons (small utility glyphs)
-- [Iconify](https://iconify.design) + Fluent Emoji for the 3D icon set
+- [Lucide](https://lucide.dev) flat line icons (white, on green gradient pods)

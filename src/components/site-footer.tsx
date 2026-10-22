@@ -8,7 +8,7 @@ export function SiteFooter() {
     <div className="mx-auto w-full max-w-6xl px-4 py-3 sm:px-6">
       <div className="flex flex-col items-center gap-1 text-center sm:flex-row sm:justify-between sm:text-left">
         <div className="flex items-center gap-2.5">
-          <span className="icon-3d flex h-8 w-8 shrink-0 items-center justify-center rounded-lg">
+          <span className="icon-3d flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white">
             <Camera3D size={20} />
           </span>
           <p className="text-xs font-semibold tracking-tight text-foreground">

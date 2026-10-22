@@ -26,7 +26,7 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="icon-3d flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl sm:h-12 sm:w-12">
+          <span className="icon-3d flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-white sm:h-12 sm:w-12">
             <Camera3D size={26} />
           </span>
           <div className="flex flex-col text-left leading-tight">
@@ -46,7 +46,7 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
             aria-label="Sign out"
             className="neumorphic-button flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-2xl lg:hidden"
           >
-            <LogOut3D size={20} />
+            <LogOut3D size={20} className="text-white" />
           </button>
         )}
       </div>
@@ -102,7 +102,7 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
               aria-label="Sign out"
               className="neumorphic-button flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-2xl"
             >
-              <LogOut3D size={20} />
+              <LogOut3D size={20} className="text-white" />
             </button>
           </div>
         )}

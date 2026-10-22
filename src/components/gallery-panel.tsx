@@ -141,7 +141,7 @@ export function GalleryPanel({
         </div>
       ) : photos.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <span className="icon-3d flex h-16 w-16 items-center justify-center rounded-3xl">
+          <span className="icon-3d flex h-16 w-16 items-center justify-center rounded-3xl text-white">
             <ImageOff3D size={30} />
           </span>
           <p className="text-sm font-medium text-muted-foreground">
@@ -174,7 +174,7 @@ export function GalleryPanel({
                     aria-label={`Download ${photo.name}`}
                     className="neumorphic-button flex h-9 flex-1 cursor-pointer items-center justify-center rounded-xl"
                   >
-                    <Download3D size={18} />
+                    <Download3D size={18} className="text-white" />
                   </button>
                   <button
                     type="button"
@@ -182,7 +182,7 @@ export function GalleryPanel({
                     aria-label={`Delete ${photo.name}`}
                     className="neumorphic-button flex h-9 flex-1 cursor-pointer items-center justify-center rounded-xl"
                   >
-                    <Trash3D size={18} />
+                    <Trash3D size={18} className="text-white" />
                   </button>
                 </div>
               </motion.li>

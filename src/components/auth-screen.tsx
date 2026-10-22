@@ -55,7 +55,7 @@ export function AuthScreen() {
             initial={{ scale: 0.6, rotate: -12 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 14 }}
-            className="icon-3d flex h-16 w-16 items-center justify-center rounded-2xl"
+            className="icon-3d flex h-16 w-16 items-center justify-center rounded-2xl text-white"
           >
             <Camera3D size={34} />
           </motion.span>
@@ -100,7 +100,7 @@ export function AuthScreen() {
             </span>
             <span className="relative">
               <span className="pointer-events-none absolute top-1/2 left-1.5 flex h-8 w-8 -translate-y-1/2 items-center justify-center">
-                <Mail3D size={20} />
+                <Mail3D size={20} className="text-[#16794a]" />
               </span>
               <input
                 type="email"
@@ -120,7 +120,7 @@ export function AuthScreen() {
             </span>
             <span className="relative">
               <span className="pointer-events-none absolute top-1/2 left-1.5 flex h-8 w-8 -translate-y-1/2 items-center justify-center">
-                <Lock3D size={20} />
+                <Lock3D size={20} className="text-[#16794a]" />
               </span>
               <input
                 type={showPassword ? "text" : "password"}

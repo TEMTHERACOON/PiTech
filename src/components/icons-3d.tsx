@@ -1,89 +1,57 @@
 /**
- * 3D icon set — powered by Iconify (offline).
+ * Flat line icons.
  *
- * Icons come from the Fluent Emoji set (Microsoft's Fluent design), which ships
- * colorful, dimensional artwork. Only the handful of icons this app uses are
- * bundled, as a curated subset in `src/lib/fluent-emoji-subset.json`, and
- * registered with Iconify up front — nothing is fetched from the Iconify API at
- * runtime.
+ * These are simple single-stroke icons from Lucide. They use `currentColor`,
+ * so they take the colour of their container — white on the green gradient,
+ * dark green on light surfaces. The dimensional "3D" look comes from the
+ * gradient pod (`icon-3d`) they are placed on, not from the artwork itself.
  *
  * Each export keeps a stable, semantic name so callers don't depend on the
- * underlying icon-set identifiers.
+ * underlying icon identifiers.
  */
 
-import { addCollection, Icon } from "@iconify/react"
-import subset from "@/lib/fluent-emoji-subset.json"
+import type { ComponentProps } from "react"
+import {
+  Camera,
+  Download,
+  Image as ImageIcon,
+  ImageOff,
+  ImagePlus,
+  Lock,
+  LogOut,
+  Mail,
+  Trash2,
+  Wand2,
+} from "lucide-react"
 
-// Register the curated set once, at module load, so icons render offline.
-addCollection(subset as Parameters<typeof addCollection>[0])
+type LucideIcon = typeof Camera
+type IconProps = ComponentProps<LucideIcon>
 
-type Icon3DProps = {
-  size?: number
-  className?: string
+/**
+ * Wraps a Lucide icon. Icons use `currentColor`, so they take the colour of
+ * their container — set `className="text-white"` where the icon sits on the
+ * green gradient, or a dark green where it sits on a light surface.
+ */
+function makeIcon(Glyph: LucideIcon) {
+  return function Icon3D({ className = "", strokeWidth = 1.75, ...props }: IconProps) {
+    return (
+      <Glyph
+        strokeWidth={strokeWidth}
+        aria-hidden="true"
+        className={className}
+        {...props}
+      />
+    )
+  }
 }
 
-const SET = "fluent-emoji"
-
-function I({ name, size, className = "" }: Icon3DProps & { name: string }) {
-  return (
-    <Icon
-      icon={`${SET}:${name}`}
-      width={size}
-      height={size}
-      className={className}
-      aria-hidden="true"
-    />
-  )
-}
-
-export function Camera3D(props: Icon3DProps) {
-  return <I name="camera" {...props} />
-}
-
-export function Image3D(props: Icon3DProps) {
-  return <I name="framed-picture" {...props} />
-}
-
-export function Wand3D(props: Icon3DProps) {
-  return <I name="magic-wand" {...props} />
-}
-
-export function Download3D(props: Icon3DProps) {
-  return <I name="outbox-tray" {...props} />
-}
-
-export function ImagePlus3D(props: Icon3DProps) {
-  return <I name="inbox-tray" {...props} />
-}
-
-export function LogOut3D(props: Icon3DProps) {
-  return <I name="door" {...props} />
-}
-
-export function Mail3D(props: Icon3DProps) {
-  return <I name="envelope" {...props} />
-}
-
-export function Lock3D(props: Icon3DProps) {
-  return <I name="locked" {...props} />
-}
-
-export function Trash3D(props: Icon3DProps) {
-  return <I name="wastebasket" {...props} />
-}
-
-export function ImageOff3D(props: Icon3DProps) {
-  return <I name="framed-picture" {...props} />
-}
-
-export function Sparkles3D(props: Icon3DProps) {
-  return <I name="sparkles" {...props} />
-}
-
-export function Save3D(props: Icon3DProps) {
-  return <I name="floppy-disk" {...props} />
-}
-
-export function Folder3D(props: Icon3DProps) {
-  return <I name="open-file-folder" {...props} />
-}
+export const Camera3D = makeIcon(Camera)
+export const Image3D = makeIcon(ImageIcon)
+export const ImageOff3D = makeIcon(ImageOff)
+export const Wand3D = makeIcon(Wand2)
+export const Download3D = makeIcon(Download)
+export const ImagePlus3D = makeIcon(ImagePlus)
+export const LogOut3D = makeIcon(LogOut)
+export const Mail3D = makeIcon(Mail)
+export const Lock3D = makeIcon(Lock)
+export const Trash3D = makeIcon(Trash2)
