@@ -154,10 +154,11 @@ set in the dashboard once:
   Required for auto-approved sign-up. While it is on, `signUp()` returns a user
   but no session, and the app shows *"Check your inbox…"* instead of entering the
   workspace. The code already handles both states, so nothing breaks either way.
-- **Google provider** → *enable*, and add `http://localhost:5173` (plus your
-  deployed origin) to the redirect allow-list
-  (<https://supabase.com/dashboard/project/gjotiqtvajdjprvozjgq/auth/url-configuration>).
-  Required for "Continue with Google".
+- **Google provider** → *not enabled*. The "Continue with Google" button has been
+  removed from the UI for now, so only email/password is offered. The auth layer
+  still exposes `signInWithGoogle` (see `src/lib/auth.ts`) if you want to bring it
+  back: enable the provider in the dashboard, add your origin to the redirect
+  allow-list, and re-add the button.
 
 Both settings are read from `/auth/v1/settings`; the app adapts at runtime.
 
@@ -188,6 +189,10 @@ message *"You can save up to 5 photos on this device."*
   subscribes to auth changes.
 - **Local mock** otherwise, backed by `localStorage`, where every credential is
   auto-approved so the demo never blocks.
+
+The UI currently offers **email + password only** (log in / register). Google
+sign-in is implemented in the auth layer but not surfaced — see the dashboard
+note above.
 
 `src/components/auth-screen.tsx` and `src/components/auth-provider.tsx` are
 backend-agnostic and need no changes. Failures are surfaced inline (wrong
