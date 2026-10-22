@@ -24,8 +24,12 @@ function loadImage(src: string): Promise<HTMLImageElement> {
  * shows through exactly where the frame is open.
  *
  * The photo is placed with the same geometry as the on-screen preview — the
- * "cover" fit, plus the zoom and pan the user applied — so the export matches
- * what is in the frame, pixel for pixel.
+ * "cover the window" fit, plus the zoom and pan the user applied — so the
+ * export matches what is in the frame, pixel for pixel.
+ *
+ * The canvas is painted white first: that is the mat the frame shows around a
+ * photo that has been zoomed out. The artwork's alpha is strictly binary, so
+ * painting underneath it changes nothing else.
  */
 export async function composeFrame(
   photoSrc: string,
@@ -42,6 +46,10 @@ export async function composeFrame(
 
   const ctx = canvas.getContext("2d")
   if (!ctx) throw new Error("Canvas 2D context is not available")
+
+  // The mat behind the photo — the frame container is white on screen.
+  ctx.fillStyle = "#ffffff"
+  ctx.fillRect(0, 0, FRAME_SIZE, FRAME_SIZE)
 
   const fit = coverFit(photo.naturalWidth, photo.naturalHeight)
   const rect = photoRect(clampTransform(transform, fit), fit)

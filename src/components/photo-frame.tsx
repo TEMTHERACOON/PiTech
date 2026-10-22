@@ -5,6 +5,7 @@ import {
   IDENTITY_TRANSFORM,
   MAX_ZOOM,
   MIN_ZOOM,
+  WINDOW_CENTER,
   ZOOM_STEP,
   clampTransform,
   coverFit,
@@ -211,25 +212,12 @@ export function PhotoFrame({
   }, [photo, fit, applyTransform, surfaceBox])
 
   // ---------------------------------------------------------------------
-  // Double click / double tap: toggle between fit and 2x
+  // Double click / double tap: back to the default fit
   // ---------------------------------------------------------------------
 
-  const handleDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleDoubleClick = () => {
     if (!photo) return
-    const box = surfaceBox()
-    if (!box) return
-
-    const current = transformRef.current
-    if (current.zoom > MIN_ZOOM + 0.01) {
-      applyTransform(clampTransform(IDENTITY_TRANSFORM, fit))
-      return
-    }
-
-    const anchor = {
-      x: (event.clientX - box.left) / box.width,
-      y: (event.clientY - box.top) / box.height,
-    }
-    applyTransform(zoomTo(current, fit, anchor, 2))
+    applyTransform(clampTransform(IDENTITY_TRANSFORM, fit))
   }
 
   // ---------------------------------------------------------------------
@@ -256,11 +244,15 @@ export function PhotoFrame({
         break
       case "+":
       case "=":
-        applyTransform(zoomTo(current, fit, { x: 0.5, y: 0.5 }, current.zoom * ZOOM_STEP))
+        applyTransform(
+          zoomTo(current, fit, WINDOW_CENTER, current.zoom * ZOOM_STEP),
+        )
         break
       case "-":
       case "_":
-        applyTransform(zoomTo(current, fit, { x: 0.5, y: 0.5 }, current.zoom / ZOOM_STEP))
+        applyTransform(
+          zoomTo(current, fit, WINDOW_CENTER, current.zoom / ZOOM_STEP),
+        )
         break
       case "0":
         applyTransform(clampTransform(IDENTITY_TRANSFORM, fit))
@@ -274,14 +266,24 @@ export function PhotoFrame({
   const handleZoomIn = () => {
     const current = transformRef.current
     applyTransform(
-      zoomTo(current, fit, { x: 0.5, y: 0.5 }, Math.min(MAX_ZOOM, current.zoom * ZOOM_STEP)),
+      zoomTo(
+        current,
+        fit,
+        WINDOW_CENTER,
+        Math.min(MAX_ZOOM, current.zoom * ZOOM_STEP),
+      ),
     )
   }
 
   const handleZoomOut = () => {
     const current = transformRef.current
     applyTransform(
-      zoomTo(current, fit, { x: 0.5, y: 0.5 }, Math.max(MIN_ZOOM, current.zoom / ZOOM_STEP)),
+      zoomTo(
+        current,
+        fit,
+        WINDOW_CENTER,
+        Math.max(MIN_ZOOM, current.zoom / ZOOM_STEP),
+      ),
     )
   }
 
@@ -329,7 +331,7 @@ export function PhotoFrame({
                   height: image.naturalHeight,
                 })
               }}
-              className="pointer-events-none absolute select-none"
+              className="pointer-events-none absolute max-w-none select-none"
               style={imageStyle}
             />
           ) : (
