@@ -1,4 +1,5 @@
 import { useRef, useState } from "react"
+import { motion } from "motion/react"
 import { Camera, Download, ImagePlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { composeFrame, downloadBlob } from "@/lib/compose-frame"
@@ -10,12 +11,15 @@ type ActionButtonsProps = {
   photo: string | null
   fileName: string | null
   onSelectPhoto: (file: File) => void
+  /** Reports the framed export so the caller can offer saving it to the gallery. */
+  onExported?: (blob: Blob, name: string) => void
 }
 
 export function ActionButtons({
   photo,
   fileName,
   onSelectPhoto,
+  onExported,
 }: ActionButtonsProps) {
   const galleryInputRef = useRef<HTMLInputElement>(null)
   const cameraInputRef = useRef<HTMLInputElement>(null)
@@ -29,7 +33,9 @@ export function ActionButtons({
     try {
       const blob = await composeFrame(photo)
       const base = (fileName ?? "photo").replace(/\.[^.]+$/, "")
-      downloadBlob(blob, `pitech-${base}-framed.png`)
+      const exportName = `pitech-${base}-framed.png`
+      downloadBlob(blob, exportName)
+      onExported?.(blob, exportName)
     } catch {
       setError("Could not export the framed photo. Please try again.")
     } finally {
@@ -42,6 +48,33 @@ export function ActionButtons({
     if (file) onSelectPhoto(file)
     event.target.value = ""
   }
+
+  const handleCamera = () => cameraInputRef.current?.click()
+  const handleGallery = () => galleryInputRef.current?.click()
+
+  const buttons = [
+    {
+      key: "camera",
+      icon: Camera,
+      label: "Take Photo",
+      onClick: handleCamera,
+      disabled: false,
+    },
+    {
+      key: "gallery",
+      icon: ImagePlus,
+      label: "Upload from Gallery",
+      onClick: handleGallery,
+      disabled: false,
+    },
+    {
+      key: "download",
+      icon: Download,
+      label: isExporting ? "Preparing..." : "Download",
+      onClick: handleDownload,
+      disabled: !photo || isExporting,
+    },
+  ]
 
   return (
     <div className="flex w-full flex-col items-center gap-4 text-center sm:gap-5">
@@ -61,38 +94,38 @@ export function ActionButtons({
         onChange={handleFileChange}
       />
 
-      <Button
-        type="button"
-        variant="ghost"
-        className={neumorphicButtonClasses}
-        onClick={() => cameraInputRef.current?.click()}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: { transition: { staggerChildren: 0.08 } },
+        }}
+        className="flex w-full flex-col items-center gap-4 sm:gap-5"
       >
-        <Camera className="h-5 w-5" />
-        <span className="text-base font-medium">Take Photo</span>
-      </Button>
-
-      <Button
-        type="button"
-        variant="ghost"
-        className={neumorphicButtonClasses}
-        onClick={() => galleryInputRef.current?.click()}
-      >
-        <ImagePlus className="h-5 w-5" />
-        <span className="text-base font-medium">Upload from Gallery</span>
-      </Button>
-
-      <Button
-        type="button"
-        variant="ghost"
-        className={neumorphicButtonClasses}
-        onClick={handleDownload}
-        disabled={!photo || isExporting}
-      >
-        <Download className="h-5 w-5" />
-        <span className="text-base font-medium">
-          {isExporting ? "Preparing..." : "Download"}
-        </span>
-      </Button>
+        {buttons.map(({ key, icon: Icon, label, onClick, disabled }) => (
+          <motion.div
+            key={key}
+            variants={{
+              hidden: { opacity: 0, y: 16 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="flex w-full justify-center"
+          >
+            <Button
+              type="button"
+              variant="ghost"
+              className={neumorphicButtonClasses}
+              onClick={onClick}
+              disabled={disabled}
+            >
+              <Icon className="h-5 w-5" />
+              <span className="text-base font-medium">{label}</span>
+            </Button>
+          </motion.div>
+        ))}
+      </motion.div>
 
       <p
         role="status"

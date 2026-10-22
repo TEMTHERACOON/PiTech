@@ -1,0 +1,194 @@
+import { useCallback, useEffect, useRef, useState } from "react"
+import { AnimatePresence, motion } from "motion/react"
+import { Download, ImageOff, Loader2, Trash2 } from "lucide-react"
+import {
+  MAX_PHOTOS_PER_DEVICE,
+  addPhoto,
+  deletePhoto,
+  listPhotos,
+  releasePhotos,
+  type SavedPhoto,
+} from "@/lib/gallery"
+
+type GalleryPanelProps = {
+  /** A freshly framed export to offer saving into the gallery. */
+  pendingBlob?: Blob | null
+  pendingName?: string | null
+  onPendingConsumed?: () => void
+}
+
+export function GalleryPanel({
+  pendingBlob,
+  pendingName,
+  onPendingConsumed,
+}: GalleryPanelProps) {
+  const [photos, setPhotos] = useState<SavedPhoto[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [notice, setNotice] = useState<string | null>(null)
+  const savedRef = useRef<Blob | null>(null)
+
+  const refresh = useCallback(async () => {
+    const next = await listPhotos()
+    setPhotos((current) => {
+      releasePhotos(current)
+      return next
+    })
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    refresh()
+      .catch(() => undefined)
+      .finally(() => {
+        if (!cancelled) setIsLoading(false)
+      })
+    return () => {
+      cancelled = true
+      setPhotos((current) => {
+        releasePhotos(current)
+        return []
+      })
+    }
+  }, [refresh])
+
+  useEffect(() => {
+    if (!pendingBlob || savedRef.current === pendingBlob) return
+    savedRef.current = pendingBlob
+    let cancelled = false
+
+    addPhoto(pendingBlob, pendingName ?? "framed-photo.png")
+      .then(() => {
+        if (cancelled) return
+        setNotice("Saved to your gallery.")
+        return refresh()
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return
+        setNotice(
+          error instanceof Error
+            ? error.message
+            : "Could not save the photo to your gallery.",
+        )
+      })
+      .finally(() => {
+        if (!cancelled) onPendingConsumed?.()
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [pendingBlob, pendingName, onPendingConsumed, refresh])
+
+  const handleDelete = async (id: string) => {
+    await deletePhoto(id)
+    setNotice(null)
+    await refresh()
+  }
+
+  const handleSaveToDevice = (photo: SavedPhoto) => {
+    const url = URL.createObjectURL(photo.blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = photo.name
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
+  }
+
+  const isFull = photos.length >= MAX_PHOTOS_PER_DEVICE
+
+  return (
+    <section className="flex w-full flex-col gap-6">
+      <div className="flex flex-col gap-2 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            My Images
+          </h2>
+          <p className="text-sm font-medium text-muted-foreground">
+            Stored on this device only.
+          </p>
+        </div>
+        <p className="text-sm font-semibold text-[#a55704]">
+          {photos.length} / {MAX_PHOTOS_PER_DEVICE} photos
+        </p>
+      </div>
+
+      <p className="neumorphic-card rounded-2xl px-4 py-3 text-center text-sm font-medium text-muted-foreground sm:text-left">
+        You can keep up to {MAX_PHOTOS_PER_DEVICE} photos per device.
+        {isFull ? " Delete one to make room for another." : ""}
+      </p>
+
+      <AnimatePresence>
+        {notice && (
+          <motion.p
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            role="status"
+            className="text-sm font-semibold text-[#a55704]"
+          >
+            {notice}
+          </motion.p>
+        )}
+      </AnimatePresence>
+
+      {isLoading ? (
+        <div className="flex items-center justify-center gap-2 py-16 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span className="text-sm font-medium">Loading your photos…</span>
+        </div>
+      ) : photos.length === 0 ? (
+        <div className="flex flex-col items-center gap-3 py-16 text-center">
+          <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#f8eadc] shadow-[inset_4px_4px_9px_#cbb08f,inset_-4px_-4px_9px_#fffdf9]">
+            <ImageOff className="h-7 w-7 text-[#a55704]" />
+          </span>
+          <p className="text-sm font-medium text-muted-foreground">
+            No saved photos yet. Frame one and hit Download to keep it here.
+          </p>
+        </div>
+      ) : (
+        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <AnimatePresence mode="popLayout">
+            {photos.map((photo) => (
+              <motion.li
+                layout
+                key={photo.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 260, damping: 24 }}
+                className="neumorphic-frame group relative overflow-hidden rounded-3xl bg-[#f3d2af] p-2"
+              >
+                <img
+                  src={photo.url}
+                  alt={photo.name}
+                  className="aspect-square w-full rounded-2xl object-cover"
+                />
+
+                <div className="mt-2 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveToDevice(photo)}
+                    aria-label={`Download ${photo.name}`}
+                    className="neumorphic-button flex h-9 flex-1 cursor-pointer items-center justify-center rounded-xl text-foreground"
+                  >
+                    <Download className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(photo.id)}
+                    aria-label={`Delete ${photo.name}`}
+                    className="neumorphic-button flex h-9 flex-1 cursor-pointer items-center justify-center rounded-xl text-[#a55704]"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </ul>
+      )}
+    </section>
+  )
+}
