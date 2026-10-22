@@ -8,7 +8,7 @@ import { Camera3D, Lock3D, Mail3D } from "@/components/icons-3d"
 type Mode = "signin" | "signup"
 
 const fieldClasses =
-  "h-12 w-full rounded-2xl border-0 bg-[#0a1738] pl-11 pr-11 text-foreground shadow-[inset_3px_3px_8px_rgba(0,2,20,0.7),inset_-2px_-2px_6px_rgba(64,94,170,0.22)] outline-none transition-shadow placeholder:text-muted-foreground/60 focus-visible:shadow-[inset_3px_3px_8px_rgba(0,2,20,0.7),inset_-2px_-2px_6px_rgba(64,94,170,0.22),0_0_0_2px_rgba(252,241,208,0.4)]"
+  "h-12 w-full rounded-2xl border-0 bg-[#eef1f9] pl-11 pr-11 text-foreground shadow-[inset_3px_3px_7px_rgba(34,57,111,0.12),inset_-3px_-3px_7px_rgba(255,255,255,0.95)] outline-none transition-shadow placeholder:text-muted-foreground/60 focus-visible:shadow-[inset_2px_2px_5px_rgba(34,57,111,0.1),inset_-2px_-2px_5px_rgba(255,255,255,0.95),0_0_0_2px_rgba(34,57,111,0.35)]"
 
 export function AuthScreen() {
   const { signIn, signUp, signInWithGoogle } = useAuth()
@@ -59,7 +59,7 @@ export function AuthScreen() {
           >
             <Camera3D size={34} />
           </motion.span>
-          <h1 className="bg-gradient-to-br from-[#fcf1d0] to-[#e4cf94] bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:text-3xl">
+          <h1 className="bg-gradient-to-br from-[#22396f] to-[#010736] bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:text-3xl">
             {isSignup ? "Create your account" : "Welcome back"}
           </h1>
           <p className="text-sm font-medium text-muted-foreground">
@@ -67,7 +67,7 @@ export function AuthScreen() {
           </p>
         </div>
 
-        <div className="mt-7 flex rounded-2xl bg-[#0a1738] p-1 shadow-[inset_3px_3px_8px_rgba(0,2,20,0.7),inset_-2px_-2px_6px_rgba(64,94,170,0.22)]">
+        <div className="mt-7 flex rounded-2xl bg-[#eef1f9] p-1 shadow-[inset_2px_2px_6px_rgba(34,57,111,0.12),inset_-2px_-2px_6px_rgba(255,255,255,0.95)]">
           {(["signin", "signup"] as const).map((value) => (
             <button
               key={value}
@@ -79,7 +79,7 @@ export function AuthScreen() {
                 <motion.span
                   layoutId="auth-tab"
                   transition={{ type: "spring", stiffness: 320, damping: 28 }}
-                  className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#2b4179] to-[#17254f] shadow-[2px_2px_8px_rgba(0,2,20,0.7),inset_0_1px_0_rgba(252,241,208,0.18)]"
+                  className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#22396f] to-[#0d1c42] shadow-[2px_2px_8px_rgba(34,57,111,0.4),inset_0_1px_0_rgba(252,241,208,0.2)]"
                 />
               )}
               <span
@@ -150,7 +150,7 @@ export function AuthScreen() {
           <Button
             type="submit"
             disabled={isBusy}
-            className="mt-1 h-12 w-full cursor-pointer rounded-2xl border-0 bg-gradient-to-br from-[#fcf1d0] to-[#e4cf94] text-base font-semibold text-[#010736] shadow-[0_10px_24px_rgba(0,2,20,0.6),inset_0_1px_0_rgba(255,255,255,0.6)] transition-all hover:brightness-105 hover:shadow-[0_6px_16px_rgba(0,2,20,0.55),inset_0_1px_0_rgba(255,255,255,0.6)] active:brightness-95 disabled:pointer-events-none disabled:opacity-60"
+            className="mt-1 h-12 w-full cursor-pointer rounded-2xl border-0 bg-gradient-to-br from-[#22396f] to-[#0d1c42] text-base font-semibold text-[#fcf1d0] shadow-[0_10px_24px_rgba(34,57,111,0.35),inset_0_1px_0_rgba(252,241,208,0.25)] transition-all hover:brightness-110 hover:shadow-[0_6px_16px_rgba(34,57,111,0.3),inset_0_1px_0_rgba(252,241,208,0.25)] active:brightness-95 disabled:pointer-events-none disabled:opacity-60"
           >
             {isBusy ? (
               <>
@@ -164,9 +164,9 @@ export function AuthScreen() {
         </form>
 
         <div className="mt-6 flex items-center gap-3">
-          <span className="h-px flex-1 bg-[#22396f]" />
+          <span className="h-px flex-1 bg-[#dbe3f5]" />
           <span className="text-xs font-medium text-muted-foreground">or</span>
-          <span className="h-px flex-1 bg-[#22396f]" />
+          <span className="h-px flex-1 bg-[#dbe3f5]" />
         </div>
 
         <Button

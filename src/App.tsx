@@ -89,9 +89,9 @@ function Workspace() {
   if (!user) return <AuthScreen />
 
   return (
-    <main className="app-backdrop flex min-h-screen w-full flex-col text-foreground">
+    <main className="flex min-h-screen w-full flex-col bg-white text-foreground">
       {/* Header — fixed to the top of the viewport */}
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-[#22396f]/70 bg-[#010736]/85 backdrop-blur-md">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-[#dbe3f5] bg-white/90 backdrop-blur-md">
         <div className="mx-auto w-full max-w-6xl px-4 py-3 sm:px-6 sm:py-4">
           <SiteHeader activeTab={tab} onTabChange={setTab} />
         </div>
@@ -127,7 +127,7 @@ function Workspace() {
       </div>
 
       {/* Footer — fixed to the bottom of the viewport */}
-      <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-[#22396f]/70 bg-[#010736]/85 backdrop-blur-md">
+      <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-[#dbe3f5] bg-white/90 backdrop-blur-md">
         <SiteFooter />
       </footer>
     </main>

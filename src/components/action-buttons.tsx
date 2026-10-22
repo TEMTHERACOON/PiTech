@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { composeFrame, downloadBlob } from "@/lib/compose-frame"
 
 const neumorphicButtonClasses =
-  "neumorphic-button group relative flex h-14 w-full max-w-[280px] cursor-pointer items-center justify-center gap-3 rounded-2xl border-0 px-6 text-foreground transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 disabled:hover:scale-100"
+  "neumorphic-button group relative flex h-14 w-full max-w-[280px] cursor-pointer items-center justify-center gap-3 rounded-2xl border-0 px-6 text-[#fcf1d0] transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 disabled:hover:scale-100"
 
 type ActionButtonsProps = {
   photo: string | null
@@ -120,7 +120,7 @@ export function ActionButtons({
               onClick={onClick}
               disabled={disabled}
             >
-              <span className="icon-3d flex h-9 w-9 shrink-0 items-center justify-center rounded-xl">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/95 shadow-[0_3px_8px_rgba(0,2,20,0.3)]">
                 <Icon size={22} />
               </span>
               <span className="text-base font-medium">{label}</span>

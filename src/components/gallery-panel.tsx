@@ -110,7 +110,7 @@ export function GalleryPanel({
             Stored on this device only.
           </p>
         </div>
-        <p className="text-sm font-semibold text-[#fcf1d0]">
+        <p className="text-sm font-semibold text-[#22396f]">
           {photos.length} / {MAX_PHOTOS_PER_DEVICE} photos
         </p>
       </div>
@@ -127,7 +127,7 @@ export function GalleryPanel({
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             role="status"
-            className="text-sm font-semibold text-[#fcf1d0]"
+            className="text-sm font-semibold text-[#22396f]"
           >
             {notice}
           </motion.p>

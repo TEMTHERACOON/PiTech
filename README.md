@@ -99,55 +99,55 @@ in the gallery header, an inline notice, and the footer.
 
 ## Theme
 
-Dark navy theme built on
-[Color Hunt · 0107360d1c4222396ffcf1d0](https://colorhunt.co/palette/0107360d1c4222396ffcf1d0).
+Navy palette from
+[Color Hunt · 0107360d1c4222396ffcf1d0](https://colorhunt.co/palette/0107360d1c4222396ffcf1d0),
+used as **navy accents on a white background**: the main app surface is white,
+while buttons, icons, and the auth screen carry the navy gradient.
 
 | Token | Value | Use |
 | --- | --- | --- |
-| Ink / background | `#010736` | Page backdrop base |
-| Navy | `#0d1c42` | Card / surface base |
-| Indigo | `#22396f` | Raised surfaces, borders |
-| Cream | `#fcf1d0` | Text, accents, CTAs |
-| Cream deep | `#e4cf94` | Gradient end for cream elements |
+| Ink | `#010736` | Headings, deepest navy |
+| Navy | `#0d1c42` | Button gradient base |
+| Indigo | `#22396f` | Button gradient top, accents |
+| Cream | `#fcf1d0` | Text/icon colour on navy |
+| Background | `#ffffff` | Main app surface |
 
 Brand tokens live in `src/index.css` (`--brand-ink`, `--brand-navy`,
 `--brand-indigo`, `--brand-cream`).
 
 ### Gradients
 
-Gradients are defined as CSS custom properties in `src/index.css` and reused
-across the UI:
+Gradients are CSS custom properties in `src/index.css`:
 
 | Variable | Purpose |
 | --- | --- |
-| `--grad-page` | Page backdrop wash (`app-backdrop`) |
-| `--grad-surface` | Card / frame surfaces |
-| `--grad-raised` | Raised buttons and icon pods |
-| `--grad-accent` | Cream CTA gradient |
+| `--grad-navy` | Buttons and icon pods (`#22396f` → `#0b1738`) |
+| `--grad-navy-strong` | Stronger navy for emphasis |
+| `--grad-page` | Auth-screen backdrop (`app-backdrop`) |
 
-Neomorphic surfaces are utilities in `src/index.css`: `neumorphic-card`,
-`neumorphic-frame`, and `neumorphic-button` — each uses the navy gradients with
-a top sheen (`inset 0 1px 0`) and dual soft shadows tuned for the dark surface.
+Neomorphic surfaces (`neumorphic-card`, `neumorphic-frame`,
+`neumorphic-button`) use soft light shadows tuned for the white surface.
+`neumorphic-button` and the `icon-3d` pod paint the **navy gradient**.
 
 ### 3D icons
 
-`src/components/icons-3d.tsx` holds a self-contained 3D icon set (`Camera3D`,
-`Image3D`, `Wand3D`, `Download3D`, `ImagePlus3D`, `LogOut3D`, `Mail3D`,
-`Lock3D`, `Trash3D`, `ImageOff3D`). Each is an inline SVG drawn with layered
-linear gradients, a highlight, and a drop shadow so it reads as a dimensional
-object. They take a `size` prop and need no external asset or icon font.
+Icons come from [Iconify](https://iconify.design) using the **Fluent Emoji** set
+(Microsoft Fluent design) — colorful, dimensional artwork. Only the icons the app
+uses are bundled, as a curated subset in `src/lib/fluent-emoji-subset.json`,
+registered with Iconify at module load, so **nothing is fetched at runtime**.
 
-Icons are seated on gradient pods via the `icon-3d` / `icon-3d-cream` utilities
-(inset highlight + inset shadow + cast shadow), which gives every control a
-beveled, physical look.
+`src/components/icons-3d.tsx` wraps them behind stable semantic names
+(`Camera3D`, `Image3D`, `Wand3D`, `Download3D`, `ImagePlus3D`, `LogOut3D`,
+`Mail3D`, `Lock3D`, `Trash3D`, `ImageOff3D`, …). Each takes a `size` prop and
+sits on a navy gradient pod via the `icon-3d` utility.
 
 ## Chrome
 
 The **header** and **footer** are fixed full-width bars — pinned to the top and
 bottom of the viewport with `position: fixed`, so they always stay visible while
-the content scrolls. Both are flat solid `background` bars with a subtle divider
-line. The scrolling content is padded (`pt-28` / `pb-28` on mobile, `pt-32` on
-larger screens) so it clears the bars and is never hidden behind them.
+the content scrolls. Both are translucent white bars with a subtle divider line.
+The scrolling content is padded (`pt-28` / `pb-28` on mobile, `pt-32` on larger
+screens) so it clears the bars and is never hidden behind them.
 
 ## Stack
 
@@ -155,5 +155,5 @@ larger screens) so it clears the bars and is never hidden behind them.
 - Tailwind CSS v4
 - shadcn/ui (`base-nova` preset, base colour `mist`)
 - [Motion](https://motion.dev) (Framer Motion) for animations
-- [Lucide](https://lucide.dev) icons (utility/eye toggle glyphs)
-- Custom inline 3D SVG icon set (`src/components/icons-3d.tsx`)
+- [Lucide](https://lucide.dev) icons (small utility glyphs)
+- [Iconify](https://iconify.design) + Fluent Emoji for the 3D icon set
