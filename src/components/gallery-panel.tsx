@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
-import { Download, ImageOff, Loader2, Trash2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
+import { Download3D, ImageOff3D, Trash3D } from "@/components/icons-3d"
 import {
   MAX_PHOTOS_PER_DEVICE,
   addPhoto,
@@ -109,7 +110,7 @@ export function GalleryPanel({
             Stored on this device only.
           </p>
         </div>
-        <p className="text-sm font-semibold text-[#b07b45]">
+        <p className="text-sm font-semibold text-[#fcf1d0]">
           {photos.length} / {MAX_PHOTOS_PER_DEVICE} photos
         </p>
       </div>
@@ -126,7 +127,7 @@ export function GalleryPanel({
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             role="status"
-            className="text-sm font-semibold text-[#b07b45]"
+            className="text-sm font-semibold text-[#fcf1d0]"
           >
             {notice}
           </motion.p>
@@ -140,8 +141,8 @@ export function GalleryPanel({
         </div>
       ) : photos.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[#fbf1e6] shadow-[inset_3px_3px_8px_rgba(163,130,96,0.14),inset_-3px_-3px_8px_rgba(255,253,249,0.9)]">
-            <ImageOff className="h-7 w-7 text-[#b07b45]" />
+          <span className="icon-3d flex h-16 w-16 items-center justify-center rounded-3xl">
+            <ImageOff3D size={30} />
           </span>
           <p className="text-sm font-medium text-muted-foreground">
             No saved photos yet. Frame one and hit Download to keep it here.
@@ -158,7 +159,7 @@ export function GalleryPanel({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ type: "spring", stiffness: 260, damping: 24 }}
-                className="neumorphic-frame group relative overflow-hidden rounded-3xl bg-[#f6ddc1] p-2"
+                className="neumorphic-frame group relative overflow-hidden rounded-3xl p-2"
               >
                 <img
                   src={photo.url}
@@ -171,17 +172,17 @@ export function GalleryPanel({
                     type="button"
                     onClick={() => handleSaveToDevice(photo)}
                     aria-label={`Download ${photo.name}`}
-                    className="neumorphic-button flex h-9 flex-1 cursor-pointer items-center justify-center rounded-xl text-foreground"
+                    className="neumorphic-button flex h-9 flex-1 cursor-pointer items-center justify-center rounded-xl"
                   >
-                    <Download className="h-4 w-4" />
+                    <Download3D size={18} />
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDelete(photo.id)}
                     aria-label={`Delete ${photo.name}`}
-                    className="neumorphic-button flex h-9 flex-1 cursor-pointer items-center justify-center rounded-xl text-[#b07b45]"
+                    className="neumorphic-button flex h-9 flex-1 cursor-pointer items-center justify-center rounded-xl"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash3D size={18} />
                   </button>
                 </div>
               </motion.li>

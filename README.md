@@ -99,24 +99,47 @@ in the gallery header, an inline notice, and the footer.
 
 ## Theme
 
-| Token | Value |
-| --- | --- |
-| Ink / primary | `#21332c` (softened from `#09251c`) |
-| Accent | `#b07b45` (softened from `#a55704`) |
-| Surface / tan | `#f6ddc1` (softened from `#f3d2af`) |
-| Background / cream | `#fbf1e6` (softened from `#f8eadc`) |
-| Shadow | `rgba(163, 130, 96, 0.18)` dark side / `rgba(255, 253, 249, 0.9)` light side |
-| Font | Noto Sans |
+Dark navy theme built on
+[Color Hunt · 0107360d1c4222396ffcf1d0](https://colorhunt.co/palette/0107360d1c4222396ffcf1d0).
 
-Based on [Color Hunt · 09251ca55704f3d2aff8eadc](https://colorhunt.co/palette/09251ca55704f3d2aff8eadc),
-blended toward the warm cream so the UI reads softer: lower-contrast text, warm
-muted greys, and translucent neomorphic shadows instead of hard hex stops.
-Brand tokens live in `src/index.css` (`--brand-ink`, `--brand-amber`,
-`--brand-tan`, `--brand-cream`).
+| Token | Value | Use |
+| --- | --- | --- |
+| Ink / background | `#010736` | Page backdrop base |
+| Navy | `#0d1c42` | Card / surface base |
+| Indigo | `#22396f` | Raised surfaces, borders |
+| Cream | `#fcf1d0` | Text, accents, CTAs |
+| Cream deep | `#e4cf94` | Gradient end for cream elements |
+
+Brand tokens live in `src/index.css` (`--brand-ink`, `--brand-navy`,
+`--brand-indigo`, `--brand-cream`).
+
+### Gradients
+
+Gradients are defined as CSS custom properties in `src/index.css` and reused
+across the UI:
+
+| Variable | Purpose |
+| --- | --- |
+| `--grad-page` | Page backdrop wash (`app-backdrop`) |
+| `--grad-surface` | Card / frame surfaces |
+| `--grad-raised` | Raised buttons and icon pods |
+| `--grad-accent` | Cream CTA gradient |
 
 Neomorphic surfaces are utilities in `src/index.css`: `neumorphic-card`,
-`neumorphic-frame`, and `neumorphic-button` (each with hover/pressed inset
-states).
+`neumorphic-frame`, and `neumorphic-button` — each uses the navy gradients with
+a top sheen (`inset 0 1px 0`) and dual soft shadows tuned for the dark surface.
+
+### 3D icons
+
+`src/components/icons-3d.tsx` holds a self-contained 3D icon set (`Camera3D`,
+`Image3D`, `Wand3D`, `Download3D`, `ImagePlus3D`, `LogOut3D`, `Mail3D`,
+`Lock3D`, `Trash3D`, `ImageOff3D`). Each is an inline SVG drawn with layered
+linear gradients, a highlight, and a drop shadow so it reads as a dimensional
+object. They take a `size` prop and need no external asset or icon font.
+
+Icons are seated on gradient pods via the `icon-3d` / `icon-3d-cream` utilities
+(inset highlight + inset shadow + cast shadow), which gives every control a
+beveled, physical look.
 
 ## Chrome
 
@@ -132,4 +155,5 @@ larger screens) so it clears the bars and is never hidden behind them.
 - Tailwind CSS v4
 - shadcn/ui (`base-nova` preset, base colour `mist`)
 - [Motion](https://motion.dev) (Framer Motion) for animations
-- [Lucide](https://lucide.dev) icons
+- [Lucide](https://lucide.dev) icons (utility/eye toggle glyphs)
+- Custom inline 3D SVG icon set (`src/components/icons-3d.tsx`)

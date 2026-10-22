@@ -80,8 +80,8 @@ function Workspace() {
 
   if (isLoading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-background text-foreground">
-        <Loader2 className="h-6 w-6 animate-spin text-[#b07b45]" />
+      <main className="app-backdrop flex min-h-screen items-center justify-center text-foreground">
+        <Loader2 className="h-6 w-6 animate-spin text-[#fcf1d0]" />
       </main>
     )
   }
@@ -89,9 +89,9 @@ function Workspace() {
   if (!user) return <AuthScreen />
 
   return (
-    <main className="flex min-h-screen w-full flex-col bg-background text-foreground">
+    <main className="app-backdrop flex min-h-screen w-full flex-col text-foreground">
       {/* Header — fixed to the top of the viewport */}
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-[#f0dcbf] bg-background">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-[#22396f]/70 bg-[#010736]/85 backdrop-blur-md">
         <div className="mx-auto w-full max-w-6xl px-4 py-3 sm:px-6 sm:py-4">
           <SiteHeader activeTab={tab} onTabChange={setTab} />
         </div>
@@ -127,7 +127,7 @@ function Workspace() {
       </div>
 
       {/* Footer — fixed to the bottom of the viewport */}
-      <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-[#f0dcbf] bg-background">
+      <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-[#22396f]/70 bg-[#010736]/85 backdrop-blur-md">
         <SiteFooter />
       </footer>
     </main>

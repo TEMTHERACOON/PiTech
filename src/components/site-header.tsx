@@ -1,12 +1,12 @@
 import { motion } from "motion/react"
-import { Camera, Image, LogOut, Wand2 } from "lucide-react"
 import { useAuth } from "@/components/auth-provider"
+import { Camera3D, Image3D, LogOut3D, Wand3D } from "@/components/icons-3d"
 
 export type Tab = "create" | "images"
 
-const TABS: { id: Tab; label: string; icon: typeof Camera }[] = [
-  { id: "create", label: "Create", icon: Wand2 },
-  { id: "images", label: "My Images", icon: Image },
+const TABS: { id: Tab; label: string; Icon: typeof Camera3D }[] = [
+  { id: "create", label: "Create", Icon: Wand3D },
+  { id: "images", label: "My Images", Icon: Image3D },
 ]
 
 type SiteHeaderProps = {
@@ -26,11 +26,11 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#2b443a] text-[#fbf1e6] shadow-[inset_1px_1px_3px_rgba(0,0,0,0.2)] sm:h-12 sm:w-12">
-            <Camera className="h-5 w-5 sm:h-6 sm:w-6" />
+          <span className="icon-3d flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl sm:h-12 sm:w-12">
+            <Camera3D size={26} />
           </span>
           <div className="flex flex-col text-left leading-tight">
-            <span className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+            <span className="bg-gradient-to-br from-[#fcf1d0] to-[#e4cf94] bg-clip-text text-xl font-bold tracking-tight text-transparent sm:text-2xl">
               PiTech
             </span>
             <span className="text-xs font-medium text-muted-foreground sm:text-sm">
@@ -44,9 +44,9 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
             type="button"
             onClick={signOut}
             aria-label="Sign out"
-            className="neumorphic-button flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-2xl text-foreground lg:hidden"
+            className="neumorphic-button flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-2xl lg:hidden"
           >
-            <LogOut className="h-4 w-4" />
+            <LogOut3D size={20} />
           </button>
         )}
       </div>
@@ -54,33 +54,36 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
       <div className="flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between lg:justify-end">
         <nav
           aria-label="Sections"
-          className="flex rounded-2xl bg-[#fbf1e6] p-1 shadow-[inset_2px_2px_6px_rgba(163,130,96,0.16),inset_-2px_-2px_6px_rgba(255,253,249,0.9)]"
+          className="flex rounded-2xl bg-[#0a1738] p-1 shadow-[inset_3px_3px_8px_rgba(0,2,20,0.7),inset_-2px_-2px_6px_rgba(64,94,170,0.22)]"
         >
-          {TABS.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => onTabChange(id)}
-              aria-current={activeTab === id ? "page" : undefined}
-              className="relative flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-colors sm:flex-initial"
-            >
-              {activeTab === id && (
-                <motion.span
-                  layoutId="header-tab"
-                  transition={{ type: "spring", stiffness: 320, damping: 28 }}
-                  className="absolute inset-0 rounded-xl bg-[#2b443a] shadow-[2px_2px_6px_rgba(163,130,96,0.25)]"
-                />
-              )}
-              <span
-                className={`relative flex items-center gap-2 ${
-                  activeTab === id ? "text-[#fbf1e6]" : "text-muted-foreground"
-                }`}
+          {TABS.map(({ id, label, Icon }) => {
+            const isActive = activeTab === id
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => onTabChange(id)}
+                aria-current={isActive ? "page" : undefined}
+                className="relative flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-colors sm:flex-initial"
               >
-                <Icon className="h-4 w-4" />
-                {label}
-              </span>
-            </button>
-          ))}
+                {isActive && (
+                  <motion.span
+                    layoutId="header-tab"
+                    transition={{ type: "spring", stiffness: 320, damping: 28 }}
+                    className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#2b4179] to-[#17254f] shadow-[2px_2px_8px_rgba(0,2,20,0.7),inset_0_1px_0_rgba(252,241,208,0.18)]"
+                  />
+                )}
+                <span
+                  className={`relative flex items-center gap-2 ${
+                    isActive ? "text-[#fcf1d0]" : "text-muted-foreground"
+                  }`}
+                >
+                  <Icon size={18} />
+                  {label}
+                </span>
+              </button>
+            )
+          })}
         </nav>
 
         {user && (
@@ -97,9 +100,9 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
               type="button"
               onClick={signOut}
               aria-label="Sign out"
-              className="neumorphic-button flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-2xl text-foreground"
+              className="neumorphic-button flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-2xl"
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut3D size={20} />
             </button>
           </div>
         )}

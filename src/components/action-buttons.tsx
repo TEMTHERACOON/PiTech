@@ -1,11 +1,11 @@
 import { useRef, useState } from "react"
 import { motion } from "motion/react"
-import { Camera, Download, ImagePlus } from "lucide-react"
+import { Download3D, Camera3D, ImagePlus3D } from "@/components/icons-3d"
 import { Button } from "@/components/ui/button"
 import { composeFrame, downloadBlob } from "@/lib/compose-frame"
 
 const neumorphicButtonClasses =
-  "neumorphic-button group relative flex h-14 w-full max-w-[280px] cursor-pointer items-center justify-center gap-3 rounded-2xl border-0 bg-background px-6 text-foreground transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 disabled:hover:scale-100"
+  "neumorphic-button group relative flex h-14 w-full max-w-[280px] cursor-pointer items-center justify-center gap-3 rounded-2xl border-0 px-6 text-foreground transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 disabled:hover:scale-100"
 
 type ActionButtonsProps = {
   photo: string | null
@@ -55,21 +55,21 @@ export function ActionButtons({
   const buttons = [
     {
       key: "camera",
-      icon: Camera,
+      Icon: Camera3D,
       label: "Take Photo",
       onClick: handleCamera,
       disabled: false,
     },
     {
       key: "gallery",
-      icon: ImagePlus,
+      Icon: ImagePlus3D,
       label: "Upload from Gallery",
       onClick: handleGallery,
       disabled: false,
     },
     {
       key: "download",
-      icon: Download,
+      Icon: Download3D,
       label: isExporting ? "Preparing..." : "Download",
       onClick: handleDownload,
       disabled: !photo || isExporting,
@@ -103,7 +103,7 @@ export function ActionButtons({
         }}
         className="flex w-full flex-col items-center gap-4 sm:gap-5"
       >
-        {buttons.map(({ key, icon: Icon, label, onClick, disabled }) => (
+        {buttons.map(({ key, Icon, label, onClick, disabled }) => (
           <motion.div
             key={key}
             variants={{
@@ -120,7 +120,9 @@ export function ActionButtons({
               onClick={onClick}
               disabled={disabled}
             >
-              <Icon className="h-5 w-5" />
+              <span className="icon-3d flex h-9 w-9 shrink-0 items-center justify-center rounded-xl">
+                <Icon size={22} />
+              </span>
               <span className="text-base font-medium">{label}</span>
             </Button>
           </motion.div>

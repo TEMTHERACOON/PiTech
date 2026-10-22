@@ -1,13 +1,14 @@
 import { useState } from "react"
 import { motion } from "motion/react"
-import { Camera, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/components/auth-provider"
+import { Camera3D, Lock3D, Mail3D } from "@/components/icons-3d"
 
 type Mode = "signin" | "signup"
 
 const fieldClasses =
-  "h-12 w-full rounded-2xl border-0 bg-[#fbf1e6] pl-11 pr-11 text-foreground shadow-[inset_3px_3px_7px_rgba(163,130,96,0.14),inset_-3px_-3px_7px_rgba(255,253,249,0.9)] outline-none transition-shadow placeholder:text-muted-foreground/60 focus-visible:shadow-[inset_2px_2px_5px_rgba(163,130,96,0.12),inset_-2px_-2px_5px_rgba(255,253,249,0.9),0_0_0_2px_rgba(208,165,119,0.5)]"
+  "h-12 w-full rounded-2xl border-0 bg-[#0a1738] pl-11 pr-11 text-foreground shadow-[inset_3px_3px_8px_rgba(0,2,20,0.7),inset_-2px_-2px_6px_rgba(64,94,170,0.22)] outline-none transition-shadow placeholder:text-muted-foreground/60 focus-visible:shadow-[inset_3px_3px_8px_rgba(0,2,20,0.7),inset_-2px_-2px_6px_rgba(64,94,170,0.22),0_0_0_2px_rgba(252,241,208,0.4)]"
 
 export function AuthScreen() {
   const { signIn, signUp, signInWithGoogle } = useAuth()
@@ -42,7 +43,7 @@ export function AuthScreen() {
   }
 
   return (
-    <main className="flex min-h-screen w-full items-center justify-center bg-background px-4 py-10 text-foreground">
+    <main className="app-backdrop flex min-h-screen w-full items-center justify-center px-4 py-10 text-foreground">
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -54,11 +55,11 @@ export function AuthScreen() {
             initial={{ scale: 0.6, rotate: -12 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 14 }}
-            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2b443a] text-[#fbf1e6] shadow-[inset_1px_1px_4px_rgba(0,0,0,0.2)]"
+            className="icon-3d flex h-16 w-16 items-center justify-center rounded-2xl"
           >
-            <Camera className="h-7 w-7" />
+            <Camera3D size={34} />
           </motion.span>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+          <h1 className="bg-gradient-to-br from-[#fcf1d0] to-[#e4cf94] bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:text-3xl">
             {isSignup ? "Create your account" : "Welcome back"}
           </h1>
           <p className="text-sm font-medium text-muted-foreground">
@@ -66,24 +67,24 @@ export function AuthScreen() {
           </p>
         </div>
 
-        <div className="mt-7 flex rounded-2xl bg-[#fbf1e6] p-1 shadow-[inset_2px_2px_6px_rgba(163,130,96,0.14),inset_-2px_-2px_6px_rgba(255,253,249,0.9)]">
+        <div className="mt-7 flex rounded-2xl bg-[#0a1738] p-1 shadow-[inset_3px_3px_8px_rgba(0,2,20,0.7),inset_-2px_-2px_6px_rgba(64,94,170,0.22)]">
           {(["signin", "signup"] as const).map((value) => (
             <button
               key={value}
               type="button"
               onClick={() => setMode(value)}
-              className="relative flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition-colors"
+              className="relative flex-1 cursor-pointer rounded-xl px-4 py-2 text-sm font-semibold transition-colors"
             >
               {mode === value && (
                 <motion.span
                   layoutId="auth-tab"
                   transition={{ type: "spring", stiffness: 320, damping: 28 }}
-                  className="absolute inset-0 rounded-xl bg-[#2b443a] shadow-[2px_2px_6px_rgba(163,130,96,0.25)]"
+                  className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#2b4179] to-[#17254f] shadow-[2px_2px_8px_rgba(0,2,20,0.7),inset_0_1px_0_rgba(252,241,208,0.18)]"
                 />
               )}
               <span
                 className={`relative ${
-                  mode === value ? "text-[#fbf1e6]" : "text-muted-foreground"
+                  mode === value ? "text-[#fcf1d0]" : "text-muted-foreground"
                 }`}
               >
                 {value === "signin" ? "Log in" : "Register"}
@@ -98,7 +99,9 @@ export function AuthScreen() {
               Email
             </span>
             <span className="relative">
-              <Mail className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-[#b07b45]" />
+              <span className="pointer-events-none absolute top-1/2 left-1.5 flex h-8 w-8 -translate-y-1/2 items-center justify-center">
+                <Mail3D size={20} />
+              </span>
               <input
                 type="email"
                 required
@@ -116,7 +119,9 @@ export function AuthScreen() {
               Password
             </span>
             <span className="relative">
-              <Lock className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-[#b07b45]" />
+              <span className="pointer-events-none absolute top-1/2 left-1.5 flex h-8 w-8 -translate-y-1/2 items-center justify-center">
+                <Lock3D size={20} />
+              </span>
               <input
                 type={showPassword ? "text" : "password"}
                 required
@@ -145,7 +150,7 @@ export function AuthScreen() {
           <Button
             type="submit"
             disabled={isBusy}
-            className="mt-1 h-12 w-full cursor-pointer rounded-2xl border-0 bg-[#b07b45] text-base font-semibold text-[#fbf1e6] shadow-[6px_6px_14px_rgba(163,130,96,0.22),-6px_-6px_14px_rgba(255,253,249,0.9)] transition-all hover:bg-[#b07b45]/92 hover:shadow-[3px_3px_8px_rgba(163,130,96,0.2),-3px_-3px_8px_rgba(255,253,249,0.85)] active:shadow-[inset_4px_4px_9px_rgba(0,0,0,0.2)] disabled:pointer-events-none disabled:opacity-60"
+            className="mt-1 h-12 w-full cursor-pointer rounded-2xl border-0 bg-gradient-to-br from-[#fcf1d0] to-[#e4cf94] text-base font-semibold text-[#010736] shadow-[0_10px_24px_rgba(0,2,20,0.6),inset_0_1px_0_rgba(255,255,255,0.6)] transition-all hover:brightness-105 hover:shadow-[0_6px_16px_rgba(0,2,20,0.55),inset_0_1px_0_rgba(255,255,255,0.6)] active:brightness-95 disabled:pointer-events-none disabled:opacity-60"
           >
             {isBusy ? (
               <>
@@ -159,16 +164,16 @@ export function AuthScreen() {
         </form>
 
         <div className="mt-6 flex items-center gap-3">
-          <span className="h-px flex-1 bg-[#f0dcbf]" />
+          <span className="h-px flex-1 bg-[#22396f]" />
           <span className="text-xs font-medium text-muted-foreground">or</span>
-          <span className="h-px flex-1 bg-[#f0dcbf]" />
+          <span className="h-px flex-1 bg-[#22396f]" />
         </div>
 
         <Button
           type="button"
           onClick={handleGoogle}
           disabled={isBusy}
-          className="mt-6 h-12 w-full cursor-pointer rounded-2xl border-0 bg-background text-base font-semibold text-foreground shadow-[6px_6px_14px_rgba(163,130,96,0.18),-6px_-6px_14px_rgba(255,253,249,0.9)] transition-all hover:shadow-[3px_3px_8px_rgba(163,130,96,0.16),-3px_-3px_8px_rgba(255,253,249,0.85)] hover:scale-[1.01] active:shadow-[inset_4px_4px_9px_rgba(163,130,96,0.2),inset_-4px_-4px_9px_rgba(255,253,249,0.85)] disabled:pointer-events-none disabled:opacity-60"
+          className="neumorphic-button mt-6 h-12 w-full cursor-pointer rounded-2xl border-0 text-base font-semibold text-foreground transition-all hover:scale-[1.01] disabled:pointer-events-none disabled:opacity-60"
         >
           <GoogleMark />
           Continue with Google
