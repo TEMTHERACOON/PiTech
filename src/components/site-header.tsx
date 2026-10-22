@@ -51,7 +51,7 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
         )}
       </div>
 
-      <div className="flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between lg:justify-end">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 lg:justify-end">
         <nav
           aria-label="Sections"
           className="flex rounded-2xl bg-[#eaf5ee] p-1 shadow-[inset_2px_2px_6px_rgba(20,102,58,0.14),inset_-2px_-2px_6px_rgba(255,255,255,0.95)]"

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { ActionButtons } from "@/components/action-buttons"
 import { AuthProvider, useAuth } from "@/components/auth-provider"
@@ -59,12 +59,36 @@ function Workspace() {
   const [photo, setPhoto] = useState<string | null>(null)
   const [fileName, setFileName] = useState<string | null>(null)
   const [pending, setPending] = useState<PendingExport | null>(null)
+  const headerRef = useRef<HTMLElement>(null)
+  const footerRef = useRef<HTMLElement>(null)
+  const [chrome, setChrome] = useState({ top: 112, bottom: 96 })
 
   useEffect(() => {
     return () => {
       if (photo) URL.revokeObjectURL(photo)
     }
   }, [photo])
+
+  // Measure the fixed bars and use their real heights to pad the scrolling
+  // content, so it always clears them — no guessing, no overlap.
+  useEffect(() => {
+    const header = headerRef.current
+    const footer = footerRef.current
+    if (!header || !footer) return
+
+    const measure = () => {
+      setChrome({
+        top: Math.ceil(header.getBoundingClientRect().height),
+        bottom: Math.ceil(footer.getBoundingClientRect().height),
+      })
+    }
+
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(header)
+    observer.observe(footer)
+    return () => observer.disconnect()
+  }, [user])
 
   const handleSelectPhoto = (file: File) => {
     setPhoto(URL.createObjectURL(file))
@@ -96,7 +120,7 @@ function Workspace() {
   if (!user) return <AuthScreen />
 
   return (
-    <main className="relative flex min-h-screen w-full flex-col overflow-hidden bg-white text-foreground">
+    <main className="relative flex min-h-screen w-full flex-col bg-white text-foreground">
       {/* Decorative gradient blobs — drift slowly behind the content */}
       <div
         aria-hidden="true"
@@ -107,14 +131,20 @@ function Workspace() {
       </div>
 
       {/* Header — fixed to the top of the viewport */}
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-[#d3e8da] bg-white/90 backdrop-blur-md">
+      <header
+        ref={headerRef}
+        className="fixed inset-x-0 top-0 z-50 border-b border-[#d3e8da] bg-white/90 backdrop-blur-md"
+      >
         <div className="mx-auto w-full max-w-6xl px-4 py-3 sm:px-6 sm:py-4">
           <SiteHeader activeTab={tab} onTabChange={setTab} />
         </div>
       </header>
 
-      {/* Scrolling content — padded to clear the fixed bars */}
-      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 pt-28 pb-28 sm:px-6 sm:pt-32 sm:pb-28">
+      {/* Scrolling content — padded to clear the measured height of the bars */}
+      <div
+        className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 pb-8 sm:px-6"
+        style={{ paddingTop: chrome.top + 24, paddingBottom: chrome.bottom + 24 }}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={tab}
@@ -143,7 +173,10 @@ function Workspace() {
       </div>
 
       {/* Footer — fixed to the bottom of the viewport */}
-      <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-[#d3e8da] bg-white/90 backdrop-blur-md">
+      <footer
+        ref={footerRef}
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-[#d3e8da] bg-white/90 backdrop-blur-md"
+      >
         <SiteFooter />
       </footer>
     </main>

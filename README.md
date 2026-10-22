@@ -149,8 +149,12 @@ buttons, and dark green where they sit on a light surface.
 The **header** and **footer** are fixed full-width bars — pinned to the top and
 bottom of the viewport with `position: fixed`, so they always stay visible while
 the content scrolls. Both are translucent white bars with a subtle divider line.
-The scrolling content is padded (`pt-28` / `pb-28` on mobile, `pt-32` on larger
-screens) so it clears the bars and is never hidden behind them.
+
+Rather than guessing the bars' height with fixed padding, the workspace measures
+them with a `ResizeObserver` (`headerRef` / `footerRef` in `src/App.tsx`) and
+pads the scrolling content by their real height plus a comfortable gap. This
+means the content can never be hidden behind the bars, whatever the screen size
+or how the header wraps.
 
 ## Stack
 
