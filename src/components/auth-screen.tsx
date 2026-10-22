@@ -62,7 +62,7 @@ export function AuthScreen() {
             {isSignup ? "Create your account" : "Welcome back"}
           </h1>
           <p className="text-sm font-medium text-muted-foreground">
-            Memories Forever Digitlized!
+            Sign in to frame your photos.
           </p>
         </div>
 

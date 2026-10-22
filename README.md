@@ -1,7 +1,5 @@
 # PiTech
 
-**Memories Forever Digitlized!**
-
 A React app that places a photo inside an ornate frame, lets you save it to a
 personal gallery, and download the finished picture.
 
@@ -67,15 +65,16 @@ pwsh -File scripts\generate-frame-cutout.ps1
 
 ```
 ┌───────────────────────────────────────────────────────────┐
-│  [◉] PiTech · Memories Forever Digitlized!   [Create][Images]│  ← header
+│  [◉] PiTech · Frame your memories           [Create][Images]│  ← header
 ├──────────────────────────────┬────────────────────────────┤
-│                              │  "Memories Forever          │
-│      Frame + photo           │       Digitlized!"          │
-│      (frame-cutout.png       │     AllianCICS logo         │
+│                              │                            │
+│      Frame + photo           │                            │
+│      (frame-cutout.png       │                            │
 │       layered on top)        │                            │
+│                              │                            │
 │                              │  [Take] [Upload] [Download] │
 ├──────────────────────────────┴────────────────────────────┤
-│  [◉] PiTech · © 2026 · AllianCICS     Made with ♥          │  ← footer
+│  [◉] PiTech · © 2026                  Made with ♥          │  ← footer
 │           Up to 5 photos can be stored per device.         │
 └───────────────────────────────────────────────────────────┘
 ```

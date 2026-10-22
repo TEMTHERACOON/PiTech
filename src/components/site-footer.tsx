@@ -15,7 +15,7 @@ export function SiteFooter() {
               PiTech
             </p>
             <p className="text-xs text-muted-foreground">
-              © {YEAR} PiTech · AllianCICS
+              © {YEAR} PiTech
             </p>
           </div>
         </div>

@@ -34,7 +34,7 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
               PiTech
             </span>
             <span className="text-xs font-medium text-muted-foreground sm:text-sm">
-              Memories Forever Digitlized!
+              Frame your memories
             </span>
           </div>
         </div>

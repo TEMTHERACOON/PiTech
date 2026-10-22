@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "motion/react"
 import { ActionButtons } from "@/components/action-buttons"
 import { AuthProvider, useAuth } from "@/components/auth-provider"
 import { AuthScreen } from "@/components/auth-screen"
-import { BrandPanel } from "@/components/brand-panel"
 import { GalleryPanel } from "@/components/gallery-panel"
 import { PhotoFrame } from "@/components/photo-frame"
 import { SiteFooter } from "@/components/site-footer"
@@ -43,8 +42,6 @@ function CreatePanel({
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.08 }}
         className="flex w-full max-w-md flex-col items-center gap-8 text-center sm:gap-10"
       >
-        <BrandPanel />
-
         <ActionButtons
           photo={photo}
           fileName={fileName}
