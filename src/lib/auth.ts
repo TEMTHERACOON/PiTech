@@ -1,14 +1,15 @@
 /**
- * Mock authentication layer.
+ * Authentication layer.
  *
- * This intentionally mimics the shape of a real auth client (Supabase today is
- * the target) so the UI never has to change when the backend lands. Every
- * sign-up / sign-in is auto-approved: the user object is persisted in
- * `localStorage` and treated as a valid session.
+ * Uses Supabase Auth when `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` are
+ * configured, and otherwise falls back to a local mock so the app still runs
+ * before a project is connected. The exported signatures are identical either
+ * way, so the UI never changes.
  *
- * To move to Supabase later, replace the bodies of these functions with calls
- * to `supabase.auth.*` and keep the exported signatures identical.
+ * The mock keeps sessions in `localStorage` and auto-approves every sign-in.
  */
+
+import { supabase, isSupabaseConfigured } from "@/lib/supabase"
 
 export type User = {
   id: string
@@ -18,12 +19,157 @@ export type User = {
   createdAt: string
 }
 
+// ---------------------------------------------------------------------------
+// Supabase-backed implementation
+// ---------------------------------------------------------------------------
+
+function toUser(input: {
+  id: string
+  email?: string | null
+  createdAt?: string
+  appMetadata?: Record<string, unknown>
+  userMetadata?: Record<string, unknown>
+}): User {
+  const email = input.email ?? ""
+  const provider =
+    (input.appMetadata?.provider as string) === "google" ? "google" : "password"
+  const metaName = input.userMetadata?.full_name ?? input.userMetadata?.name
+
+  return {
+    id: input.id,
+    email,
+    name: (metaName as string) || displayName(email),
+    provider,
+    createdAt: input.createdAt ?? new Date().toISOString(),
+  }
+}
+
+function displayName(email: string) {
+  if (!email) return "PiTech user"
+  return email.split("@")[0].replace(/[._-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+/** Reads the current Supabase session, if any. */
+export function getSession(): User | null {
+  if (!isSupabaseConfigured) return getMockSession()
+  // Supabase hydrates asynchronously; `AuthProvider` reads the live session in
+  // its own effect. Returning null here keeps first paint consistent.
+  return null
+}
+
+/** Hydrates the current user from Supabase (async). No-op in mock mode. */
+export async function getCurrentUser(): Promise<User | null> {
+  if (!isSupabaseConfigured || !supabase) return getMockSession()
+
+  const { data } = await supabase.auth.getUser()
+  if (!data.user) return null
+  return toUser({
+    id: data.user.id,
+    email: data.user.email,
+    createdAt: data.user.created_at,
+    appMetadata: data.user.app_metadata,
+    userMetadata: data.user.user_metadata,
+  })
+}
+
+/** Subscribes to auth changes so the UI follows sign-in / sign-out. */
+export function onAuthStateChange(callback: (user: User | null) => void) {
+  if (!isSupabaseConfigured || !supabase) return () => {}
+
+  const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+    callback(
+      session?.user
+        ? toUser({
+            id: session.user.id,
+            email: session.user.email,
+            createdAt: session.user.created_at,
+            appMetadata: session.user.app_metadata,
+            userMetadata: session.user.user_metadata,
+          })
+        : null,
+    )
+  })
+
+  return () => data.subscription.unsubscribe()
+}
+
+/** Registers a new account. */
+export async function signUpWithPassword(
+  email: string,
+  password: string,
+): Promise<User> {
+  if (!isSupabaseConfigured || !supabase) return mockSignUp(email, password)
+
+  const { data, error } = await supabase.auth.signUp({
+    email: email.trim().toLowerCase(),
+    password,
+  })
+  if (error) throw new Error(error.message)
+  if (!data.user) throw new Error("Sign-up did not return a user.")
+
+  return toUser({
+    id: data.user.id,
+    email: data.user.email,
+    createdAt: data.user.created_at,
+    appMetadata: data.user.app_metadata,
+    userMetadata: data.user.user_metadata,
+  })
+}
+
+/** Signs in with email and password. */
+export async function signInWithPassword(
+  email: string,
+  password: string,
+): Promise<User> {
+  if (!isSupabaseConfigured || !supabase) return mockSignIn(email, password)
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email.trim().toLowerCase(),
+    password,
+  })
+  if (error) throw new Error(error.message)
+  if (!data.user) throw new Error("Sign-in did not return a user.")
+
+  return toUser({
+    id: data.user.id,
+    email: data.user.email,
+    createdAt: data.user.created_at,
+    appMetadata: data.user.app_metadata,
+    userMetadata: data.user.user_metadata,
+  })
+}
+
+/** Starts Google OAuth. In mock mode this resolves immediately. */
+export async function signInWithGoogle(): Promise<User | null> {
+  if (!isSupabaseConfigured || !supabase) return mockSignInWithGoogle()
+
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: window.location.origin },
+  })
+  if (error) throw new Error(error.message)
+  // The browser is redirected to Google; the session arrives on the way back.
+  return null
+}
+
+export async function signOut() {
+  if (isSupabaseConfigured && supabase) {
+    await supabase.auth.signOut()
+    return
+  }
+  persistMockSession(null)
+}
+
+// ---------------------------------------------------------------------------
+// Local mock (fallback when Supabase is not configured)
+// ---------------------------------------------------------------------------
+
 const USERS_KEY = "pitech.users"
 const SESSION_KEY = "pitech.session"
 
 type StoredUser = User & { password?: string }
 
-function readUsers(): StoredUser[] {
+function readMockUsers(): StoredUser[] {
   try {
     const raw = localStorage.getItem(USERS_KEY)
     return raw ? (JSON.parse(raw) as StoredUser[]) : []
@@ -32,11 +178,11 @@ function readUsers(): StoredUser[] {
   }
 }
 
-function writeUsers(users: StoredUser[]) {
+function writeMockUsers(users: StoredUser[]) {
   localStorage.setItem(USERS_KEY, JSON.stringify(users))
 }
 
-function persistSession(user: StoredUser | null) {
+function persistMockSession(user: StoredUser | null) {
   if (user) {
     const { password: _password, ...safe } = user
     localStorage.setItem(SESSION_KEY, JSON.stringify(safe))
@@ -45,11 +191,7 @@ function persistSession(user: StoredUser | null) {
   }
 }
 
-function displayName(email: string) {
-  return email.split("@")[0].replace(/[._-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-}
-
-export function getSession(): User | null {
+function getMockSession(): User | null {
   try {
     const raw = localStorage.getItem(SESSION_KEY)
     return raw ? (JSON.parse(raw) as User) : null
@@ -58,13 +200,9 @@ export function getSession(): User | null {
   }
 }
 
-/** Registers a new account. Auto-approved — no email confirmation step. */
-export async function signUpWithPassword(
-  email: string,
-  password: string,
-): Promise<User> {
+async function mockSignUp(email: string, password: string): Promise<User> {
   const normalized = email.trim().toLowerCase()
-  const users = readUsers()
+  const users = readMockUsers()
 
   const user: StoredUser = {
     id: crypto.randomUUID(),
@@ -80,36 +218,28 @@ export async function signUpWithPassword(
   if (existing >= 0) users[existing] = user
   else users.push(user)
 
-  writeUsers(users)
-  persistSession(user)
-  return getSession() as User
+  writeMockUsers(users)
+  persistMockSession(user)
+  return getMockSession() as User
 }
 
-/**
- * Signs in. In the mock every credential is accepted and auto-approved; if the
- * email is unknown an account is created on the fly so the demo never blocks.
- */
-export async function signInWithPassword(
-  email: string,
-  password: string,
-): Promise<User> {
+async function mockSignIn(email: string, password: string): Promise<User> {
   const normalized = email.trim().toLowerCase()
-  const users = readUsers()
+  const users = readMockUsers()
   const found = users.find((u) => u.email === normalized)
 
   if (found) {
     found.password = password
-    writeUsers(users)
-    persistSession(found)
-    return getSession() as User
+    writeMockUsers(users)
+    persistMockSession(found)
+    return getMockSession() as User
   }
 
-  return signUpWithPassword(email, password)
+  return mockSignUp(email, password)
 }
 
-/** Simulated Google OAuth. Always resolves to an approved session. */
-export async function signInWithGoogle(): Promise<User> {
-  const users = readUsers()
+async function mockSignInWithGoogle(): Promise<User> {
+  const users = readMockUsers()
   const email = "you@gmail.com"
   const found = users.find((u) => u.email === email)
 
@@ -123,11 +253,7 @@ export async function signInWithGoogle(): Promise<User> {
   user.provider = "google"
 
   if (!found) users.push(user)
-  writeUsers(users)
-  persistSession(user)
-  return getSession() as User
-}
-
-export function signOut() {
-  persistSession(null)
+  writeMockUsers(users)
+  persistMockSession(user)
+  return getMockSession() as User
 }
