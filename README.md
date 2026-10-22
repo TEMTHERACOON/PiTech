@@ -116,14 +116,15 @@ Brand tokens live in `src/index.css` (`--brand-ink`, `--brand-amber`,
 
 Neomorphic surfaces are utilities in `src/index.css`: `neumorphic-card`,
 `neumorphic-frame`, and `neumorphic-button` (each with hover/pressed inset
-states). `sticky-chrome` gives the header/footer a translucent, blurred
-background.
+states).
 
 ## Chrome
 
-The **header** is pinned to the top and the **footer** to the bottom of the
-viewport via `position: sticky`, so both stay visible while the content scrolls.
-Both use the translucent `sticky-chrome` backdrop.
+The **header** and **footer** are fixed full-width bars — pinned to the top and
+bottom of the viewport with `position: fixed`, so they always stay visible while
+the content scrolls. Both are flat solid `background` bars with a subtle divider
+line. The scrolling content is padded (`pt-28` / `pb-28` on mobile, `pt-32` on
+larger screens) so it clears the bars and is never hidden behind them.
 
 ## Stack
 

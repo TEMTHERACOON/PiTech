@@ -4,7 +4,7 @@ const YEAR = new Date().getFullYear()
 
 export function SiteFooter() {
   return (
-    <footer className="mx-auto w-full max-w-6xl px-4 py-3 sm:px-6">
+    <div className="mx-auto w-full max-w-6xl px-4 py-3 sm:px-6">
       <div className="flex flex-col items-center gap-1 text-center sm:flex-row sm:justify-between sm:text-left">
         <div className="flex items-center gap-2.5">
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2b443a] text-[#fbf1e6]">
@@ -24,6 +24,6 @@ export function SiteFooter() {
           for your memories
         </p>
       </div>
-    </footer>
+    </div>
   )
 }

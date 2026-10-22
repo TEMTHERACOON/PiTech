@@ -90,15 +90,15 @@ function Workspace() {
 
   return (
     <main className="flex min-h-screen w-full flex-col bg-background text-foreground">
-      {/* Header — pinned to the top of the viewport */}
-      <div className="sticky-chrome sticky top-0 z-50 border-b border-[#f0dcbf]/70 px-4 pt-4 pb-4 sm:px-6">
-        <div className="mx-auto w-full max-w-6xl">
+      {/* Header — fixed to the top of the viewport */}
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-[#f0dcbf] bg-background">
+        <div className="mx-auto w-full max-w-6xl px-4 py-3 sm:px-6 sm:py-4">
           <SiteHeader activeTab={tab} onTabChange={setTab} />
         </div>
-      </div>
+      </header>
 
-      {/* Scrolling content */}
-      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-8 pb-12 sm:px-6 sm:py-10 sm:pb-14">
+      {/* Scrolling content — padded to clear the fixed bars */}
+      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 pt-28 pb-28 sm:px-6 sm:pt-32 sm:pb-28">
         <AnimatePresence mode="wait">
           <motion.div
             key={tab}
@@ -126,10 +126,10 @@ function Workspace() {
         </AnimatePresence>
       </div>
 
-      {/* Footer — pinned to the bottom of the viewport */}
-      <div className="sticky-chrome sticky bottom-0 z-40 border-t border-[#f0dcbf]/70">
+      {/* Footer — fixed to the bottom of the viewport */}
+      <footer className="fixed inset-x-0 bottom-0 z-40 border-t border-[#f0dcbf] bg-background">
         <SiteFooter />
-      </div>
+      </footer>
     </main>
   )
 }

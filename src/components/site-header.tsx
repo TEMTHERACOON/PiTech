@@ -18,11 +18,11 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
   const { user, signOut } = useAuth()
 
   return (
-    <motion.header
+    <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" }}
-      className="neumorphic-card flex w-full flex-col gap-4 rounded-3xl px-5 py-4 sm:px-7 sm:py-5 lg:flex-row lg:items-center lg:justify-between"
+      className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -104,6 +104,6 @@ export function SiteHeader({ activeTab, onTabChange }: SiteHeaderProps) {
           </div>
         )}
       </div>
-    </motion.header>
+    </motion.div>
   )
 }
