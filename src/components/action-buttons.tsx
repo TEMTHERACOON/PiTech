@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { composeFrame, downloadBlob } from "@/lib/compose-frame"
 
 const neumorphicButtonClasses =
-  "group relative flex h-14 w-full max-w-[280px] items-center justify-center gap-3 rounded-2xl border-0 bg-background px-6 text-foreground shadow-[8px_8px_16px_#a9b5df,_-8px_-8px_16px_#ffffff] transition-all duration-200 ease-out hover:shadow-[4px_4px_8px_#a9b5df,_-4px_-4px_8px_#ffffff] hover:scale-[1.02] active:shadow-[inset_4px_4px_8px_#a9b5df,inset_-4px_-4px_8px_#ffffff] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-[8px_8px_16px_#a9b5df,_-8px_-8px_16px_#ffffff] disabled:hover:scale-100"
+  "neumorphic-button group relative flex h-14 w-full max-w-[280px] cursor-pointer items-center justify-center gap-3 rounded-2xl border-0 bg-background px-6 text-foreground transition-all duration-200 ease-out hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 disabled:hover:scale-100"
 
 type ActionButtonsProps = {
   photo: string | null
