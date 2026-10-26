@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react"
+import frameCutout from "@/assets/frame-cutout.png"
 import { Camera3D, Download3D } from "@/components/icons-3d"
 import { ActionButtons } from "@/components/action-buttons"
 import { PhotoFrame } from "@/components/photo-frame"
 import { useAuth } from "@/components/auth-provider"
 import { isSupabaseConfigured, supabase } from "@/lib/supabase"
 import { IDENTITY_TRANSFORM, type PhotoTransform } from "@/lib/photo-transform"
+import { SwitchCamera } from "lucide-react"
 
 type BoothRole = "camera" | "display" | null
 type Signal = { type: string; [key: string]: unknown }
@@ -18,6 +20,7 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
   const { user } = useAuth()
   const [role, setRole] = useState<BoothRole>(null)
   const [status, setStatus] = useState("Choose a device role to begin.")
+  const [facingMode, setFacingMode] = useState<"user" | "environment">("user")
   const [photo, setPhoto] = useState<string | null>(null)
   const [transform, setTransform] = useState<PhotoTransform>(IDENTITY_TRANSFORM)
   const localVideoRef = useRef<HTMLVideoElement>(null)
@@ -25,6 +28,33 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
   const streamRef = useRef<MediaStream | null>(null)
   const peerRef = useRef<RTCPeerConnection | null>(null)
   const channelRef = useRef<ReturnType<NonNullable<typeof supabase>["channel"]> | null>(null)
+
+  const startCamera = async (mode: "user" | "environment") => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: mode },
+      audio: false,
+    })
+    const nextTrack = stream.getVideoTracks()[0]
+    const currentStream = streamRef.current
+    const currentTrack = currentStream?.getVideoTracks()[0]
+    const sender = peerRef.current
+      ?.getSenders()
+      .find((item) => item.track?.kind === "video")
+
+    if (sender && nextTrack) {
+      await sender.replaceTrack(nextTrack)
+    }
+    currentStream?.getTracks().forEach((track) => track.stop())
+    streamRef.current = stream
+    if (localVideoRef.current) localVideoRef.current.srcObject = stream
+    if (currentTrack && currentTrack !== nextTrack) currentTrack.stop()
+    setFacingMode(mode)
+    setStatus(
+      mode === "user"
+        ? "Front camera active. The PC preview is ready."
+        : "Back camera active. The PC preview is ready.",
+    )
+  }
 
   useEffect(() => {
     if (!role || !user || !supabase || !isSupabaseConfigured) return
@@ -140,6 +170,15 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
     }
   }, [role, user])
 
+  const switchCamera = async () => {
+    if (role !== "camera") return
+    try {
+      await startCamera(facingMode === "user" ? "environment" : "user")
+    } catch {
+      setStatus("The other camera is not available on this device.")
+    }
+  }
+
   const capturePhoto = () => {
     const video = localVideoRef.current
     const channel = channelRef.current
@@ -209,19 +248,35 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
   if (role === "camera") {
     return (
       <section className="mx-auto flex w-full max-w-xl flex-col items-center gap-5 text-center">
-        <div className="w-full overflow-hidden rounded-3xl bg-[#062b16] shadow-brand-lg">
-          <video ref={localVideoRef} autoPlay muted playsInline className="aspect-[3/4] w-full object-cover" />
+        <div className="relative w-full overflow-hidden rounded-3xl bg-[#062b16] shadow-brand-lg">
+          <video ref={localVideoRef} autoPlay muted playsInline className="aspect-square w-full object-cover" />
+          <img
+            src={frameCutout}
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+          />
         </div>
         <h2 className="text-2xl font-bold text-foreground">Mobile Camera</h2>
         <p role="status" className="text-sm font-medium text-muted-foreground">{status}</p>
-        <button
-          type="button"
-          onClick={capturePhoto}
-          className="neumorphic-button flex h-14 w-full max-w-xs items-center justify-center gap-3 rounded-2xl text-white"
-        >
-          <Camera3D size={23} />
-          <span className="font-semibold">Capture Photo</span>
-        </button>
+        <div className="flex w-full max-w-xs flex-col gap-3">
+          <button
+            type="button"
+            onClick={capturePhoto}
+            className="neumorphic-button flex h-14 w-full items-center justify-center gap-3 rounded-2xl text-white"
+          >
+            <Camera3D size={23} />
+            <span className="font-semibold">Capture Photo</span>
+          </button>
+          <button
+            type="button"
+            onClick={switchCamera}
+            className="neumorphic-button flex h-12 w-full items-center justify-center gap-3 rounded-2xl text-white"
+          >
+            <SwitchCamera size={20} />
+            <span className="font-semibold">Switch to {facingMode === "user" ? "Back" : "Front"} Camera</span>
+          </button>
+        </div>
         <button type="button" onClick={() => setRole(null)} className="text-sm font-semibold text-[#16794a]">
           Change device role
         </button>
@@ -231,8 +286,14 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
 
   return (
     <section className="flex w-full flex-col items-center gap-8">
-      <div className="w-full max-w-3xl overflow-hidden rounded-3xl bg-[#062b16] shadow-brand-lg">
-        <video ref={remoteVideoRef} autoPlay playsInline className="aspect-video w-full object-cover" />
+      <div className="relative w-full max-w-3xl overflow-hidden rounded-3xl bg-[#062b16] shadow-brand-lg">
+        <video ref={remoteVideoRef} autoPlay playsInline className="aspect-square w-full object-cover" />
+        <img
+          src={frameCutout}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+        />
       </div>
       <p role="status" className="text-center text-sm font-medium text-muted-foreground">{status}</p>
       {photo ? (
