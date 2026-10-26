@@ -6,14 +6,12 @@ import { GalleryPanel } from "@/components/gallery-panel"
 import { LiveBoothPanel } from "@/components/live-booth-panel"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader, type Tab } from "@/components/site-header"
+import { addPhoto } from "@/lib/gallery"
 import { Loader2 } from "lucide-react"
-
-type PendingExport = { blob: Blob; name: string }
 
 function Workspace() {
   const { user, isLoading } = useAuth()
   const [tab, setTab] = useState<Tab>("create")
-  const [pending, setPending] = useState<PendingExport | null>(null)
   const headerRef = useRef<HTMLElement>(null)
   const footerRef = useRef<HTMLElement>(null)
   const [chrome, setChrome] = useState({ top: 112, bottom: 96 })
@@ -40,11 +38,10 @@ function Workspace() {
   }, [user])
 
   const handleExported = useCallback((blob: Blob, name: string) => {
-    setPending({ blob, name })
-    setTab("images")
+    void addPhoto(blob, name).catch((error: unknown) => {
+      console.error("Could not save captured photo to the gallery.", error)
+    })
   }, [])
-
-  const handlePendingConsumed = useCallback(() => setPending(null), [])
 
   if (isLoading) {
     return (
@@ -102,9 +99,6 @@ function Workspace() {
               <LiveBoothPanel onExported={handleExported} />
             ) : (
               <GalleryPanel
-                pendingBlob={pending?.blob ?? null}
-                pendingName={pending?.name ?? null}
-                onPendingConsumed={handlePendingConsumed}
               />
             )}
           </motion.div>

@@ -1,31 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { Loader2 } from "lucide-react"
 import { Download3D, ImageOff3D, Trash3D } from "@/components/icons-3d"
 import {
-  addPhoto,
   deletePhoto,
   listPhotos,
   releasePhotos,
   type SavedPhoto,
 } from "@/lib/gallery"
 
-type GalleryPanelProps = {
-  /** A freshly framed export to offer saving into the gallery. */
-  pendingBlob?: Blob | null
-  pendingName?: string | null
-  onPendingConsumed?: () => void
-}
-
-export function GalleryPanel({
-  pendingBlob,
-  pendingName,
-  onPendingConsumed,
-}: GalleryPanelProps) {
+export function GalleryPanel() {
   const [photos, setPhotos] = useState<SavedPhoto[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [notice, setNotice] = useState<string | null>(null)
-  const saveRef = useRef<{ blob: Blob; promise: Promise<SavedPhoto> } | null>(null)
 
   const refresh = useCallback(async () => {
     const next = await listPhotos()
@@ -50,45 +37,6 @@ export function GalleryPanel({
       })
     }
   }, [refresh])
-
-  useEffect(() => {
-    if (!pendingBlob) return
-
-    // The save is kept in a ref so a remount (React StrictMode runs effects
-    // twice in development) reuses the same write instead of storing the
-    // photo twice — and so the notice and the refreshed list still run.
-    if (!saveRef.current || saveRef.current.blob !== pendingBlob) {
-      saveRef.current = {
-        blob: pendingBlob,
-        promise: addPhoto(pendingBlob, pendingName ?? "framed-photo.png"),
-      }
-    }
-
-    let cancelled = false
-
-    saveRef.current.promise
-      .then(() => {
-        if (cancelled) return
-        setNotice("Saved to your gallery.")
-        return refresh()
-      })
-      .catch((error: unknown) => {
-        saveRef.current = null
-        if (cancelled) return
-        setNotice(
-          error instanceof Error
-            ? error.message
-            : "Could not save the photo to your gallery.",
-        )
-      })
-      .finally(() => {
-        if (!cancelled) onPendingConsumed?.()
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [pendingBlob, pendingName, onPendingConsumed, refresh])
 
   const handleDelete = async (id: string) => {
     try {
