@@ -267,11 +267,13 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
           <video ref={localVideoRef} autoPlay muted playsInline className="aspect-square w-full object-cover" />
           <img
             src={frameCutout}
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            alt="Photo booth frame guide"
+            className="pointer-events-none absolute inset-0 h-full w-full"
           />
         </div>
+        <p className="text-xs font-medium text-muted-foreground">
+          Align your subject inside the frame guide before capturing.
+        </p>
         <h2 className="text-2xl font-bold text-foreground">Mobile Camera</h2>
         <p role="status" className="text-sm font-medium text-muted-foreground">{status}</p>
         <div className="flex w-full max-w-xs flex-col gap-3">
@@ -306,9 +308,8 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
           <video ref={remoteVideoRef} autoPlay playsInline className="aspect-square w-full object-cover" />
           <img
             src={frameCutout}
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            alt="Photo booth frame guide"
+            className="pointer-events-none absolute inset-0 h-full w-full"
           />
         </div>
         <div className="flex w-full max-w-md flex-col items-center gap-5 pt-2 text-center lg:pt-8">
