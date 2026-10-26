@@ -33,6 +33,31 @@ function captureVideoFrame(
   return true
 }
 
+async function requestCamera(mode: "user" | "environment") {
+  const constraints: MediaStreamConstraints = {
+    video: { facingMode: { exact: mode } },
+    audio: false,
+  }
+
+  try {
+    return await navigator.mediaDevices.getUserMedia(constraints)
+  } catch (error) {
+    const devices = await navigator.mediaDevices.enumerateDevices()
+    const cameras = devices.filter((device) => device.kind === "videoinput")
+    const preferred = cameras.find((device) => {
+      const label = device.label.toLowerCase()
+      const isBack = /back|rear|environment|world/.test(label)
+      return mode === "environment" ? isBack : !isBack
+    })
+
+    if (!preferred) throw error
+    return navigator.mediaDevices.getUserMedia({
+      video: { deviceId: { exact: preferred.deviceId } },
+      audio: false,
+    })
+  }
+}
+
 export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
   const { user } = useAuth()
   const [role, setRole] = useState<BoothRole>(null)
@@ -47,13 +72,12 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
   const channelRef = useRef<ReturnType<NonNullable<typeof supabase>["channel"]> | null>(null)
 
   const startCamera = async (mode: "user" | "environment") => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: mode },
-      audio: false,
-    })
+    const previousStream = streamRef.current
+    previousStream?.getTracks().forEach((track) => track.stop())
+    streamRef.current = null
+
+    const stream = await requestCamera(mode)
     const nextTrack = stream.getVideoTracks()[0]
-    const currentStream = streamRef.current
-    const currentTrack = currentStream?.getVideoTracks()[0]
     const sender = peerRef.current
       ?.getSenders()
       .find((item) => item.track?.kind === "video")
@@ -61,10 +85,8 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
     if (sender && nextTrack) {
       await sender.replaceTrack(nextTrack)
     }
-    currentStream?.getTracks().forEach((track) => track.stop())
     streamRef.current = stream
     if (localVideoRef.current) localVideoRef.current.srcObject = stream
-    if (currentTrack && currentTrack !== nextTrack) currentTrack.stop()
     setFacingMode(mode)
     setStatus(
       mode === "user"
@@ -160,10 +182,7 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
       if (subscriptionStatus !== "SUBSCRIBED") return
       if (role === "camera") {
         try {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: "user" },
-            audio: false,
-          })
+          const stream = await requestCamera("user")
           if (!active) {
             stream.getTracks().forEach((track) => track.stop())
             return
@@ -262,8 +281,8 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
 
   if (role === "camera") {
     return (
-      <section className="mx-auto flex w-full max-w-xl flex-col items-center gap-5 text-center">
-        <div className="relative w-full overflow-hidden rounded-3xl bg-[#062b16] shadow-brand-lg">
+      <section className="booth-camera-layout mx-auto flex w-full max-w-xl flex-col items-center gap-5 text-center">
+        <div className="booth-camera-preview relative w-full overflow-hidden rounded-3xl bg-[#062b16] shadow-brand-lg">
           <video ref={localVideoRef} autoPlay muted playsInline className="aspect-square w-full object-cover" />
           <img
             src={frameCutout}
@@ -271,12 +290,13 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
             className="pointer-events-none absolute inset-0 h-full w-full"
           />
         </div>
-        <p className="text-xs font-medium text-muted-foreground">
-          Align your subject inside the frame guide before capturing.
-        </p>
-        <h2 className="text-2xl font-bold text-foreground">Mobile Camera</h2>
-        <p role="status" className="text-sm font-medium text-muted-foreground">{status}</p>
-        <div className="flex w-full max-w-xs flex-col gap-3">
+        <div className="booth-camera-controls flex w-full flex-col items-center gap-5">
+          <p className="text-xs font-medium text-muted-foreground">
+            Align your subject inside the frame guide before capturing.
+          </p>
+          <h2 className="text-2xl font-bold text-foreground">Mobile Camera</h2>
+          <p role="status" className="text-sm font-medium text-muted-foreground">{status}</p>
+          <div className="flex w-full max-w-xs flex-col gap-3">
           <button
             type="button"
             onClick={capturePhoto}
@@ -293,10 +313,11 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
             <SwitchCamera size={20} />
             <span className="font-semibold">Switch to {facingMode === "user" ? "Back" : "Front"} Camera</span>
           </button>
+          </div>
+          <button type="button" onClick={() => setRole(null)} className="text-sm font-semibold text-[#16794a]">
+            Change device role
+          </button>
         </div>
-        <button type="button" onClick={() => setRole(null)} className="text-sm font-semibold text-[#16794a]">
-          Change device role
-        </button>
       </section>
     )
   }

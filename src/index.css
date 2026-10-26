@@ -210,6 +210,26 @@
   * {
     @apply border-border outline-ring/50;
     }
+
+    @media (orientation: landscape) and (max-width: 900px) {
+        .booth-camera-layout {
+            max-width: 56rem;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .booth-camera-preview {
+            width: min(58vw, 32rem);
+            flex: 0 1 min(58vw, 32rem);
+        }
+
+        .booth-camera-controls {
+            width: min(38vw, 22rem);
+            padding-top: 0.75rem;
+        }
+    }
   body {
     @apply bg-background text-foreground;
     }
