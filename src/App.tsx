@@ -1,85 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
-import { ActionButtons } from "@/components/action-buttons"
 import { AuthProvider, useAuth } from "@/components/auth-provider"
 import { AuthScreen } from "@/components/auth-screen"
 import { GalleryPanel } from "@/components/gallery-panel"
-import { PhotoFrame } from "@/components/photo-frame"
+import { LiveBoothPanel } from "@/components/live-booth-panel"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader, type Tab } from "@/components/site-header"
-import {
-  IDENTITY_TRANSFORM,
-  type PhotoTransform,
-} from "@/lib/photo-transform"
 import { Loader2 } from "lucide-react"
 
 type PendingExport = { blob: Blob; name: string }
 
-function CreatePanel({
-  photo,
-  fileName,
-  transform,
-  onSelectPhoto,
-  onTransformChange,
-  onExported,
-}: {
-  photo: string | null
-  fileName: string | null
-  transform: PhotoTransform
-  onSelectPhoto: (file: File) => void
-  onTransformChange: (transform: PhotoTransform) => void
-  onExported: (blob: Blob, name: string) => void
-}) {
-  return (
-    <section className="flex w-full flex-col items-center gap-8 sm:gap-10 md:gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
-      <motion.div
-        initial={{ opacity: 0, x: -24 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="flex w-full justify-center"
-      >
-        <PhotoFrame
-          photo={photo}
-          transform={transform}
-          onTransformChange={onTransformChange}
-          className="w-full max-w-[min(90vw,480px)] sm:max-w-[min(85vw,520px)]"
-        />
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, x: 24 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.08 }}
-        className="flex w-full max-w-md flex-col items-center gap-8 text-center sm:gap-10"
-      >
-        <ActionButtons
-          photo={photo}
-          fileName={fileName}
-          transform={transform}
-          onSelectPhoto={onSelectPhoto}
-          onExported={onExported}
-        />
-      </motion.div>
-    </section>
-  )
-}
-
 function Workspace() {
   const { user, isLoading } = useAuth()
   const [tab, setTab] = useState<Tab>("create")
-  const [photo, setPhoto] = useState<string | null>(null)
-  const [fileName, setFileName] = useState<string | null>(null)
-  const [transform, setTransform] = useState<PhotoTransform>(IDENTITY_TRANSFORM)
   const [pending, setPending] = useState<PendingExport | null>(null)
   const headerRef = useRef<HTMLElement>(null)
   const footerRef = useRef<HTMLElement>(null)
   const [chrome, setChrome] = useState({ top: 112, bottom: 96 })
-
-  useEffect(() => {
-    return () => {
-      if (photo) URL.revokeObjectURL(photo)
-    }
-  }, [photo])
 
   // Measure the fixed bars and use their real heights to pad the scrolling
   // content, so it always clears them — no guessing, no overlap.
@@ -101,13 +38,6 @@ function Workspace() {
     observer.observe(footer)
     return () => observer.disconnect()
   }, [user])
-
-  const handleSelectPhoto = (file: File) => {
-    setPhoto(URL.createObjectURL(file))
-    setFileName(file.name)
-    // A new photo starts at the default fit.
-    setTransform(IDENTITY_TRANSFORM)
-  }
 
   const handleExported = useCallback((blob: Blob, name: string) => {
     setPending({ blob, name })
@@ -169,14 +99,7 @@ function Workspace() {
             className="flex w-full flex-col"
           >
             {tab === "create" ? (
-              <CreatePanel
-                photo={photo}
-                fileName={fileName}
-                transform={transform}
-                onSelectPhoto={handleSelectPhoto}
-                onTransformChange={setTransform}
-                onExported={handleExported}
-              />
+              <LiveBoothPanel onExported={handleExported} />
             ) : (
               <GalleryPanel
                 pendingBlob={pending?.blob ?? null}

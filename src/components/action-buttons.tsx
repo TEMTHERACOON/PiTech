@@ -1,6 +1,6 @@
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { motion } from "motion/react"
-import { Download3D, Camera3D, ImagePlus3D } from "@/components/icons-3d"
+import { Download3D } from "@/components/icons-3d"
 import { Button } from "@/components/ui/button"
 import { composeFrame, downloadBlob } from "@/lib/compose-frame"
 import type { PhotoTransform } from "@/lib/photo-transform"
@@ -11,10 +11,7 @@ const neumorphicButtonClasses =
 type ActionButtonsProps = {
   photo: string | null
   fileName: string | null
-  /** Zoom and pan applied to the photo inside the frame. */
   transform: PhotoTransform
-  onSelectPhoto: (file: File) => void
-  /** Reports the framed export so the caller can offer saving it to the gallery. */
   onExported?: (blob: Blob, name: string) => void
 }
 
@@ -22,11 +19,8 @@ export function ActionButtons({
   photo,
   fileName,
   transform,
-  onSelectPhoto,
   onExported,
 }: ActionButtonsProps) {
-  const galleryInputRef = useRef<HTMLInputElement>(null)
-  const cameraInputRef = useRef<HTMLInputElement>(null)
   const [isExporting, setIsExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -47,100 +41,28 @@ export function ActionButtons({
     }
   }
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) onSelectPhoto(file)
-    event.target.value = ""
-  }
-
-  const handleCamera = () => cameraInputRef.current?.click()
-  const handleGallery = () => galleryInputRef.current?.click()
-
-  const buttons = [
-    {
-      key: "camera",
-      Icon: Camera3D,
-      label: "Take Photo",
-      onClick: handleCamera,
-      disabled: false,
-    },
-    {
-      key: "gallery",
-      Icon: ImagePlus3D,
-      label: "Upload from Gallery",
-      onClick: handleGallery,
-      disabled: false,
-    },
-    {
-      key: "download",
-      Icon: Download3D,
-      label: isExporting ? "Preparing..." : "Download",
-      onClick: handleDownload,
-      disabled: !photo || isExporting,
-    },
-  ]
-
   return (
     <div className="flex w-full flex-col items-center gap-4 text-center sm:gap-5">
-      <input
-        ref={galleryInputRef}
-        type="file"
-        accept="image/*"
-        className="sr-only"
-        onChange={handleFileChange}
-      />
-      <input
-        ref={cameraInputRef}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        className="sr-only"
-        onChange={handleFileChange}
-      />
-
       <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: {},
-          visible: { transition: { staggerChildren: 0.08 } },
-        }}
-        className="flex w-full flex-col items-center gap-4 sm:gap-5"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex w-full justify-center"
       >
-        {buttons.map(({ key, Icon, label, onClick, disabled }) => (
-          <motion.div
-            key={key}
-            variants={{
-              hidden: { opacity: 0, y: 16 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="flex w-full justify-center"
-          >
-            <Button
-              type="button"
-              variant="ghost"
-              className={neumorphicButtonClasses}
-              onClick={onClick}
-              disabled={disabled}
-            >
-              <Icon size={22} className="text-white" />
-              <span className="text-base font-medium">{label}</span>
-            </Button>
-          </motion.div>
-        ))}
+        <Button
+          type="button"
+          variant="ghost"
+          className={neumorphicButtonClasses}
+          onClick={handleDownload}
+          disabled={!photo || isExporting}
+        >
+          <Download3D size={22} className="text-white" />
+          <span className="text-base font-medium">
+            {isExporting ? "Preparing..." : "Download"}
+          </span>
+        </Button>
       </motion.div>
-
-      <p
-        role="status"
-        className="min-h-5 text-sm font-medium text-muted-foreground"
-      >
-        {error ??
-          (isExporting
-            ? "Preparing your framed photo…"
-            : photo
-              ? "Ready to download"
-              : "Take a photo or upload to get started")}
+      <p role="status" className="min-h-5 text-sm font-medium text-muted-foreground">
+        {error ?? (isExporting ? "Preparing your framed photo…" : "Ready to download")}
       </p>
     </div>
   )
