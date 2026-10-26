@@ -91,9 +91,17 @@ export function GalleryPanel({
   }, [pendingBlob, pendingName, onPendingConsumed, refresh])
 
   const handleDelete = async (id: string) => {
-    await deletePhoto(id)
-    setNotice(null)
-    await refresh()
+    try {
+      await deletePhoto(id)
+      setNotice("Photo deleted.")
+      await refresh()
+    } catch (error: unknown) {
+      setNotice(
+        error instanceof Error
+          ? error.message
+          : "Could not delete the photo.",
+      )
+    }
   }
 
   const handleSaveToDevice = (photo: SavedPhoto) => {
@@ -115,7 +123,7 @@ export function GalleryPanel({
             My Images
           </h2>
           <p className="text-sm font-medium text-muted-foreground">
-            Stored on this device only.
+            Synced with your Supabase account.
           </p>
         </div>
         <p className="text-sm font-semibold text-[#16794a]">
@@ -152,7 +160,7 @@ export function GalleryPanel({
             <ImageOff3D size={30} />
           </span>
           <p className="text-sm font-medium text-muted-foreground">
-            No saved photos yet. Frame one and hit Download to keep it here.
+            No saved photos yet. Capture a photo to save it here automatically.
           </p>
         </div>
       ) : (
