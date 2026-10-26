@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from "motion/react"
 import { Loader2 } from "lucide-react"
 import { Download3D, ImageOff3D, Trash3D } from "@/components/icons-3d"
 import {
-  MAX_PHOTOS_PER_DEVICE,
   addPhoto,
   deletePhoto,
   listPhotos,
@@ -108,8 +107,6 @@ export function GalleryPanel({
     URL.revokeObjectURL(url)
   }
 
-  const isFull = photos.length >= MAX_PHOTOS_PER_DEVICE
-
   return (
     <section className="flex w-full flex-col gap-6">
       <div className="flex flex-col gap-2 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
@@ -122,13 +119,12 @@ export function GalleryPanel({
           </p>
         </div>
         <p className="text-sm font-semibold text-[#16794a]">
-          {photos.length} / {MAX_PHOTOS_PER_DEVICE} photos
+          {photos.length} saved photos
         </p>
       </div>
 
       <p className="neumorphic-card rounded-2xl px-4 py-3 text-center text-sm font-medium text-muted-foreground sm:text-left">
-        You can keep up to {MAX_PHOTOS_PER_DEVICE} photos per device.
-        {isFull ? " Delete one to make room for another." : ""}
+        Save as many framed photos as you need on this device.
       </p>
 
       <AnimatePresence>

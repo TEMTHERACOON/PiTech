@@ -1,28 +1,26 @@
 # PiTech
 
-A React app that places a photo inside an ornate frame, lets you save it to a
-personal gallery, and download the finished picture.
+A React app that turns a logged-in mobile device into a live photo-booth camera
+and a logged-in PC into its preview display. Captured photos can be framed,
+saved, and downloaded.
 
 | Feature | Details |
 | --- | --- |
-| Auth | Email + password login/register plus Google sign-in. Uses **Supabase Auth** when configured, and falls back to a local auto-approved mock otherwise. |
-| App access | The workspace (frame, uploads, gallery) is gated behind login/register. |
+| Auth | Shared 8-digit PIN access (`10031102`) signs into the PiTech account; no login or registration UI. |
+| App access | The workspace (live booth and gallery) is gated behind the shared PIN. |
 | Tabs | **Create** (frame + actions) and **My Images** (saved gallery). |
 | Frame container | `ASSETS/frame.png` — the photo is rendered inside the frame's window |
-| Take Photo | Opens the device camera on mobile (`capture="environment"`) |
-| Upload photo | Picks an image from the gallery to insert into the frame |
+| Live booth sync | Mobile publishes a WebRTC camera preview and captured stills to the PC over Supabase Realtime signaling |
+| Take Photo | Mobile camera only; the PC shows the live preview before capture |
 | Zoom & pan | The photo inside the frame can be moved and zoomed — drag to reposition, scroll or pinch to zoom, double-click / double-tap to reset, plus zoom-out / zoom-in / reset buttons and keyboard control. 100 % fills the frame's opening; zoom out to set the photo on the white mat |
 | Download | Exports the frame + photo as a 1080 × 1080 PNG — nothing else is stamped onto the export, no logos or branding |
-| My Images | Saved framed photos — in Supabase Storage when configured, otherwise locally in IndexedDB |
-| Storage limit | **Up to 5 photos per device.** Enforced in the database and mirrored in the client; shown in the app and the gallery counter. |
+| My Images | Saved framed photos — in IndexedDB |
+| Storage limit | No application-level photo limit; saved framed photos remain until deleted. |
 | Header / footer | Neomorphic site header (brand, tabs, account) and footer |
 | Animations | Framer Motion — entrance, tab transitions, layout, and list animations |
 | Hover / touch | Buttons grow slightly on hover — or while pressed on touch devices |
 
-> **Limit:** each device keeps **5 photos**. With Supabase this is enforced by a
-> database trigger on `photo_slots`, so the client cannot bypass it. Offline it
-> is enforced in the local IndexedDB gallery. Both are surfaced in the UI and
-> footer.
+> Saved photos remain in the local IndexedDB gallery until deleted.
 
 ## Getting started
 
@@ -53,6 +51,18 @@ made transparent.
 At runtime the photo is rendered underneath that cut-out frame, so it shows through the
 window with a pixel-perfect edge. The download button repeats the exact same compositing
 on a `<canvas>` at 1080 × 1080.
+
+### Live photo booth
+
+After signing in on both devices, open **Create** and choose **Mobile Camera**
+on the phone and **PC Display** on the computer. The phone camera stream is
+sent directly to the PC with WebRTC; Supabase Realtime is used only for the
+signaling handshake. Press **Capture Photo** on the phone to send a still to
+the PC, where it can be positioned in the frame and downloaded.
+
+Both devices must use the same Supabase-backed account and a secure origin
+(HTTPS, or localhost during development). The browser will ask the mobile
+device for camera permission.
 
 ### Zooming and moving the photo
 
@@ -184,23 +194,12 @@ npm run db:push               # apply migrations (table, trigger, policies, buck
 The `photos` bucket is created by the second migration, so no manual dashboard
 step is needed.
 
-### 4. Auth settings (dashboard)
+### 4. App access
 
-Two project settings are **not exposed by the CLI or Management API** and must be
-set in the dashboard once:
-
-- **Confirm email** → *off*
-  (<https://supabase.com/dashboard/project/gjotiqtvajdjprvozjgq/auth/providers> → Email).
-  Required for auto-approved sign-up. While it is on, `signUp()` returns a user
-  but no session, and the app shows *"Check your inbox…"* instead of entering the
-  workspace. The code already handles both states, so nothing breaks either way.
-- **Google provider** → *not enabled*. The "Continue with Google" button has been
-  removed from the UI for now, so only email/password is offered. The auth layer
-  still exposes `signInWithGoogle` (see `src/lib/auth.ts`) if you want to bring it
-  back: enable the provider in the dashboard, add your origin to the redirect
-  allow-list, and re-add the button.
-
-Both settings are read from `/auth/v1/settings`; the app adapts at runtime.
+The workspace is protected by the shared 8-digit PIN `10031102`. When Supabase
+is configured, a correct PIN signs into the account configured through
+`VITE_AUTH_EMAIL` and `VITE_AUTH_PASSWORD`. There are no user-facing login or
+registration flows.
 
 ### 5. Schema
 
@@ -220,28 +219,8 @@ message *"You can save up to 5 photos on this device."*
 
 ## Auth
 
-`src/lib/auth.ts` exposes one surface — `signInWithPassword`, `signUpWithPassword`,
-`signInWithGoogle`, `getSession`, `getCurrentUser`, `onAuthStateChange`,
-`signOut` — with two backends:
-
-- **Supabase** (`supabase.auth.*`) when the env vars are set. Sessions persist
-  and refresh automatically; `AuthProvider` hydrates the session on mount and
-  subscribes to auth changes.
-- **Local mock** otherwise, backed by `localStorage`, where every credential is
-  auto-approved so the demo never blocks.
-
-The UI currently offers **email + password only** (log in / register). Google
-sign-in is implemented in the auth layer but not surfaced — see the dashboard
-note above.
-
-`src/components/auth-screen.tsx` and `src/components/auth-provider.tsx` are
-backend-agnostic and need no changes. Failures are surfaced inline (wrong
-password, unconfirmed address), and a sign-up that needs confirmation shows a
-status message instead of entering the workspace.
-
-Verified against the hosted project: password sign-in returns a session, uploads
-are owner-scoped by RLS, the private bucket serves the owner and rejects others,
-and the 6th photo is refused by the database.
+`src/lib/auth.ts` accepts the shared PIN and signs into the PiTech account when
+Supabase is configured. Without Supabase, it stores a local fallback session.
 
 ## Gallery storage
 

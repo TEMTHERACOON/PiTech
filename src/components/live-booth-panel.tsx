@@ -16,6 +16,23 @@ type LiveBoothPanelProps = {
 
 const channelName = (userId: string) => `pitech-photo-booth:${userId}`
 
+function captureVideoFrame(
+  video: HTMLVideoElement | null,
+  send: (dataUrl: string) => void,
+) {
+  if (!video || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return false
+  const maxWidth = 1280
+  const scale = Math.min(1, maxWidth / video.videoWidth)
+  const canvas = document.createElement("canvas")
+  canvas.width = Math.round(video.videoWidth * scale)
+  canvas.height = Math.round(video.videoHeight * scale)
+  const context = canvas.getContext("2d")
+  if (!context) return false
+  context.drawImage(video, 0, 0, canvas.width, canvas.height)
+  send(canvas.toDataURL("image/jpeg", 0.82))
+  return true
+}
+
 export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
   const { user } = useAuth()
   const [role, setRole] = useState<BoothRole>(null)
@@ -99,6 +116,13 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
         setStatus("Live preview connected to the PC.")
       }
 
+      if (role === "camera" && payload.type === "capture-request") {
+        const captured = captureVideoFrame(localVideoRef.current, (dataUrl) =>
+          send({ type: "photo", dataUrl }),
+        )
+        if (captured) setStatus("Photo captured and sent to the PC display.")
+      }
+
       if (role === "display" && payload.type === "camera-ready") {
         send({ type: "display-ready" })
       }
@@ -180,25 +204,16 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
   }
 
   const capturePhoto = () => {
-    const video = localVideoRef.current
     const channel = channelRef.current
-    if (!video || !channel || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return
-
-    const maxWidth = 1280
-    const scale = Math.min(1, maxWidth / video.videoWidth)
-    const canvas = document.createElement("canvas")
-    canvas.width = Math.round(video.videoWidth * scale)
-    canvas.height = Math.round(video.videoHeight * scale)
-    const context = canvas.getContext("2d")
-    if (!context) return
-    context.drawImage(video, 0, 0, canvas.width, canvas.height)
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.82)
-    void channel.send({
-      type: "broadcast",
-      event: "signal",
-      payload: { type: "photo", dataUrl },
+    if (!channel) return
+    const captured = captureVideoFrame(localVideoRef.current, (dataUrl) => {
+      void channel.send({
+        type: "broadcast",
+        event: "signal",
+        payload: { type: "photo", dataUrl },
+      })
     })
-    setStatus("Photo captured and sent to the PC display.")
+    if (captured) setStatus("Photo captured and sent to the PC display.")
   }
 
   if (!isSupabaseConfigured) {
@@ -286,35 +301,64 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
 
   return (
     <section className="flex w-full flex-col items-center gap-8">
-      <div className="relative w-full max-w-3xl overflow-hidden rounded-3xl bg-[#062b16] shadow-brand-lg">
-        <video ref={remoteVideoRef} autoPlay playsInline className="aspect-square w-full object-cover" />
-        <img
-          src={frameCutout}
-          alt=""
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
-        />
+      <div className="flex w-full max-w-6xl flex-col items-center gap-8 lg:flex-row lg:items-start lg:justify-center lg:gap-12">
+        <div className="relative w-full max-w-[min(90vw,560px)] shrink-0 overflow-hidden rounded-3xl bg-[#062b16] shadow-brand-lg">
+          <video ref={remoteVideoRef} autoPlay playsInline className="aspect-square w-full object-cover" />
+          <img
+            src={frameCutout}
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
+        <div className="flex w-full max-w-md flex-col items-center gap-5 pt-2 text-center lg:pt-8">
+          <h2 className="text-2xl font-bold text-foreground">Photo Booth Controls</h2>
+          <p role="status" className="text-sm font-medium text-muted-foreground">{status}</p>
+          <div className="neumorphic-card w-full rounded-3xl p-6">
+            <p className="text-sm font-medium text-muted-foreground">
+              Capture on the mobile camera. The PC preview stays square and
+              matches the mobile view without stretching.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              const channel = channelRef.current
+              if (!channel) return
+              void channel.send({
+                type: "broadcast",
+                event: "signal",
+                payload: { type: "capture-request" },
+              })
+            }}
+            className="neumorphic-button flex h-14 w-full max-w-xs items-center justify-center gap-3 rounded-2xl text-white"
+          >
+            <Camera3D size={22} />
+            <span className="font-semibold">Take Photo</span>
+          </button>
+          {photo ? (
+            <ActionButtons
+              photo={photo}
+              fileName="photobooth.jpg"
+              transform={transform}
+              onExported={onExported}
+            />
+          ) : null}
+          <button type="button" onClick={() => setRole(null)} className="text-sm font-semibold text-[#16794a]">
+            Change device role
+          </button>
+        </div>
       </div>
-      <p role="status" className="text-center text-sm font-medium text-muted-foreground">{status}</p>
       {photo ? (
-        <div className="flex w-full flex-col items-center gap-8 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex w-full justify-center">
           <PhotoFrame
             photo={photo}
             transform={transform}
             onTransformChange={setTransform}
-            className="w-full max-w-[min(90vw,480px)]"
-          />
-          <ActionButtons
-            photo={photo}
-            fileName="photobooth.jpg"
-            transform={transform}
-            onExported={onExported}
+            className="w-full max-w-[min(90vw,560px)]"
           />
         </div>
       ) : null}
-      <button type="button" onClick={() => setRole(null)} className="text-sm font-semibold text-[#16794a]">
-        Change device role
-      </button>
     </section>
   )
 }

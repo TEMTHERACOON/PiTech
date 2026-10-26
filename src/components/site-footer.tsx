@@ -14,7 +14,7 @@ export function SiteFooter() {
           <p className="text-xs font-semibold tracking-tight text-foreground">
             PiTech
             <span className="ml-2 font-normal text-muted-foreground">
-              © {YEAR} · Up to 5 photos per device
+              © {YEAR} · Save your photo-booth memories
             </span>
           </p>
         </div>
