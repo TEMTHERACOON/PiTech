@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react"
 import frameCutout from "@/assets/frame-cutout.png"
 import { Camera3D, Download3D } from "@/components/icons-3d"
-import { ActionButtons } from "@/components/action-buttons"
-import { PhotoFrame } from "@/components/photo-frame"
 import { useAuth } from "@/components/auth-provider"
 import { isSupabaseConfigured, supabase } from "@/lib/supabase"
-import { IDENTITY_TRANSFORM, type PhotoTransform } from "@/lib/photo-transform"
+import { IDENTITY_TRANSFORM } from "@/lib/photo-transform"
 import { SwitchCamera } from "lucide-react"
+import { composeFrame } from "@/lib/compose-frame"
 
 type BoothRole = "camera" | "display" | null
 type Signal = { type: string; [key: string]: unknown }
@@ -63,8 +62,6 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
   const [role, setRole] = useState<BoothRole>(null)
   const [status, setStatus] = useState("Choose a device role to begin.")
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user")
-  const [photo, setPhoto] = useState<string | null>(null)
-  const [transform, setTransform] = useState<PhotoTransform>(IDENTITY_TRANSFORM)
   const localVideoRef = useRef<HTMLVideoElement>(null)
   const remoteVideoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -171,9 +168,15 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
       }
 
       if (role === "display" && payload.type === "photo") {
-        setPhoto(String(payload.dataUrl))
-        setTransform(IDENTITY_TRANSFORM)
-        setStatus("Photo captured. You can download the framed image.")
+        const dataUrl = String(payload.dataUrl)
+        setStatus("Framing your photo…")
+        try {
+          const blob = await composeFrame(dataUrl, IDENTITY_TRANSFORM)
+          onExported?.(blob, `pitech-photobooth-${Date.now()}.png`)
+          setStatus("Photo saved. Opening your images…")
+        } catch {
+          setStatus("The photo was captured, but framing failed. Please try again.")
+        }
       }
     }
 
@@ -211,7 +214,7 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
       void client.removeChannel(channel)
       channelRef.current = null
     }
-  }, [role, user])
+  }, [onExported, role, user])
 
   const switchCamera = async () => {
     if (role !== "camera") return
@@ -358,29 +361,11 @@ export function LiveBoothPanel({ onExported }: LiveBoothPanelProps) {
             <Camera3D size={22} />
             <span className="font-semibold">Take Photo</span>
           </button>
-          {photo ? (
-            <ActionButtons
-              photo={photo}
-              fileName="photobooth.jpg"
-              transform={transform}
-              onExported={onExported}
-            />
-          ) : null}
           <button type="button" onClick={() => setRole(null)} className="text-sm font-semibold text-[#16794a]">
             Change device role
           </button>
         </div>
       </div>
-      {photo ? (
-        <div className="flex w-full justify-center">
-          <PhotoFrame
-            photo={photo}
-            transform={transform}
-            onTransformChange={setTransform}
-            className="w-full max-w-[min(90vw,560px)]"
-          />
-        </div>
-      ) : null}
     </section>
   )
 }
